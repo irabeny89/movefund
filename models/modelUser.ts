@@ -1,9 +1,9 @@
 import { models, Schema, model, Model } from "mongoose";
 import type { UserType } from "../types";
 
-export default (models.UserModel as Model<UserType, {}, {}>) ||
+export default (models.User as Model<UserType, {}, {}>) ||
   model<UserType>(
-    "UserModel",
+    "User",
     new Schema<UserType>(
       {
         avatar: String,
@@ -27,8 +27,8 @@ export default (models.UserModel as Model<UserType, {}, {}>) ||
         accountNumber: String,
         accountBalance: String,
         transaction: {
-          moneyOut: [{ type: [Schema.Types.ObjectId], ref: "MoneyOut" }],
-          moneyIn: [{ type: [Schema.Types.ObjectId], ref: "MoneyIn" }],
+          moneyOuts: [{ type: [Schema.Types.ObjectId], ref: "MoneyOut" }],
+          moneyIns: [{ type: [Schema.Types.ObjectId], ref: "MoneyIn" }],
         },
         loan: {
           loanBalance: { type: Number, default: 0 },

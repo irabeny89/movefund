@@ -1,9 +1,9 @@
 import { model, models, Schema, Model } from "mongoose";
 import type { MoneyOutType } from "../types";
 
-export default (models.MoneyOutModel as Model<MoneyOutType, {}, {}>) ||
+export default (models.MoneyOut as Model<MoneyOutType, {}, {}>) ||
   model<MoneyOutType>(
-    "MoneyOutModel",
+    "MoneyOut",
     new Schema<MoneyOutType>(
       {
         amount: { type: Number, required: true },
