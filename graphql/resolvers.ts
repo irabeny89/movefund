@@ -1,6 +1,10 @@
-import { UserInputError, ValidationError } from "apollo-server-micro";
-import type { AuthUserType, GraphContextType } from "../types";
-import { register } from "../utils";
+import type {
+  AuthUserType,
+  GraphContextType,
+  LoginInputType,
+  UserCredentialType,
+} from "../types";
+import { logUserIn, register } from "../utils";
 
 const resolvers = {
   Query: {
@@ -9,11 +13,22 @@ const resolvers = {
   Mutation: {
     register: async (
       _: any,
-      { credential }: any
+      { registerInput }: { registerInput: UserCredentialType }
     ): Promise<AuthUserType | undefined> => {
       try {
-        return await register(credential);
+        return await register(registerInput);
       } catch (err: any) {
+        throw err;
+      }
+    },
+    login: async (
+      _: any,
+      { loginInput }: { loginInput: LoginInputType },
+      { UserModel }: GraphContextType
+    ): Promise<AuthUserType | undefined> => {
+      try {
+        return logUserIn(loginInput, UserModel);
+      } catch (err) {
         throw err;
       }
     },
