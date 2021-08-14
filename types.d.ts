@@ -1,9 +1,40 @@
-import mongoose, { Document, Connection } from "mongoose";
+import { MongoDataSource } from "apollo-datasource-mongodb";
+import mongoose, { Document, Connection, Model } from "mongoose";
 import { NextApiRequest } from "next";
+import Dataloader from "dataloader"
 
 type Timestamp = {
   createdAt?: Date;
   updatedAt?: Date;
+};
+
+type DatasourcesType = {
+  [name: string]: MongoDataSource<UserType | MoneyInType | MoneyOutType>;
+};
+
+export type UserCredentialType = {
+  firstname: string;
+  lastname: string;
+  email: string;
+  password: string;
+  phone: string;
+  isAdmin: boolean;
+};
+
+export type TokenArgsType = {
+  id: string;
+  firstname: string;
+  secret: string;
+  audience: string;
+  issuer: string;
+};
+
+export type AuthUserType = {
+  id: string;
+  firstname: string;
+  isAdmin: boolean;
+  accessToken: string;
+  refreshToken: string;
 };
 
 export type Fields = {
@@ -12,25 +43,28 @@ export type Fields = {
     | number
     | boolean
     | mongoose.Types.ObjectId
-    | (string | number | boolean | mongoose.Types.ObjectId)[]
-}
+    | (string | number | boolean | mongoose.Types.ObjectId)[];
+};
 
 export type GraphContextType = {
-  db: Connection | undefined
-} & ContextArgType
+  dataSources?: DatasourcesType;
+  users: DataLoader<unknown, UserType, unknown>
+  moneyIns: Dataloader<unknown, MoneyInType, unknown>,
+  moneyOuts: Dataloader<unknown, MoneyOutType, unknown>,
+} & ContextArgType;
 
 export type ContextArgType = {
   req: NextApiRequest;
 };
 
 export type UserType = {
-  _id?: mongoose.Types.ObjectId
+  _id?: mongoose.Types.ObjectId;
   avatar?: string;
   isAdmin: boolean;
   firstname: string;
   lastname: string;
   email: string;
-  password: string;
+  hashedPassword: string;
   salt: string;
   phone: string;
   street?: string;
@@ -40,8 +74,8 @@ export type UserType = {
   accountNumber?: string;
   accountBalance?: number;
   transaction?: {
-    transferOuts: string[];
-    transferIns: string[];
+    moneyOuts: mongoose.Types.ObjectId[] | MoneyOutType[];
+    moneyIns: mongoose.Types.ObjectId[] | MoneyInType[];
   };
   loan?: {
     loanBalance: number;
@@ -50,28 +84,28 @@ export type UserType = {
     interest: number;
     loanDate: Date;
   };
-} & Timestamp & Document;
+} & Timestamp
 
 export type MoneyOutType = {
-  _id?: mongoose.Types.ObjectId
-  amount: number
-  balanceBefore: number
-  balanceAfter: number
+  _id?: mongoose.Types.ObjectId;
+  amount: number;
+  balanceBefore: number;
+  balanceAfter: number;
   recipient: {
-    firstname: string
-    lastname: string,
-    accountNumber: string
-  }
-} & Timestamp & Document;
+    firstname: string;
+    lastname: string;
+    accountNumber: string;
+  };
+} & Timestamp
 
 export type MoneyInType = {
-  _id?: mongoose.Types.ObjectId
-  amount: number
-  balanceBefore: number
-  balanceAfter: number
+  _id?: mongoose.Types.ObjectId;
+  amount: number;
+  balanceBefore: number;
+  balanceAfter: number;
   sender: {
-    firstname: string
-    lastname: string
-    accountNumber: string
-  }
-} & Timestamp & Document;
+    firstname: string;
+    lastname: string;
+    accountNumber: string;
+  };
+} & Timestamp
