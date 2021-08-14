@@ -2,11 +2,13 @@ lockfileVersion: 5.3
 
 specifiers:
   '@apollo/client': ^3.4.5
+  '@types/jsonwebtoken': ^8.5.4
   '@types/react': 17.0.16
   apollo-datasource-mongodb: ^0.4.6
   apollo-server-core: ^3.1.1
   apollo-server-micro: ^3.1.1
   bootstrap: ^5.0.2
+  dataloader: ^2.0.0
   eslint: 7.32.0
   eslint-config-next: 11.0.1
   graphql: ^15.5.1
@@ -27,6 +29,7 @@ dependencies:
   apollo-server-core: 3.1.2_graphql@15.5.1
   apollo-server-micro: 3.1.2_graphql@15.5.1+micro@9.3.4
   bootstrap: 5.1.0
+  dataloader: 2.0.0
   graphql: 15.5.1
   jsonwebtoken: 8.5.1
   micro: 9.3.4
@@ -39,6 +42,7 @@ dependencies:
   react-icons: 4.2.0_react@17.0.2
 
 devDependencies:
+  '@types/jsonwebtoken': 8.5.4
   '@types/react': 17.0.16
   eslint: 7.32.0
   eslint-config-next: 11.0.1_364f6739f1a077bdf2998405af31cd57
@@ -400,6 +404,12 @@ packages:
     resolution: {integrity: sha512-lYUtmJ9BqUN688fGY1U1HZoWT1/Jrmgigx2loq4ZcJpICECm/Om3V314BxdzypO0u5PORKGMM6x0OXaljV1YFg==}
     dev: false
 
+  /@types/jsonwebtoken/8.5.4:
+    resolution: {integrity: sha512-4L8msWK31oXwdtC81RmRBAULd0ShnAHjBuKT9MRQpjP0piNrZdXyTRcKY9/UIfhGeKIT4PvF5amOOUbbT/9Wpg==}
+    dependencies:
+      '@types/node': 16.4.14
+    dev: true
+
   /@types/long/4.0.1:
     resolution: {integrity: sha512-5tXH6Bx/kNGd3MgffdmP4dy2Z+G4eaXw0SE81Tq3BNadtnMR5/ySMzX4SLEzHJzSmPNn4HIdpQsBvXMUykr58w==}
     dev: false
@@ -418,6 +428,10 @@ packages:
   /@types/node/16.4.13:
     resolution: {integrity: sha512-bLL69sKtd25w7p1nvg9pigE4gtKVpGTPojBFLMkGHXuUgap2sLqQt2qUnqmVCDfzGUL0DRNZP+1prIZJbMeAXg==}
     dev: false
+
+  /@types/node/16.4.14:
+    resolution: {integrity: sha512-GZpnVRNtv7sHDXIFncsERt+qvj4rzAgRQtnvzk3Z7OVNtThD2dHXYCMDNc80D5mv4JE278qo8biZCwcmkbdpqw==}
+    dev: true
 
   /@types/prop-types/15.7.4:
     resolution: {integrity: sha512-rZ5drC/jWjrArrS8BR6SIr4cWpW09RNTYt9AMZo3Jwwif+iacXAqgVjm0B0Bv/S1jhDXKHqRVNCbACkJ89RAnQ==}
@@ -1275,6 +1289,10 @@ packages:
 
   /dataloader/1.4.0:
     resolution: {integrity: sha512-68s5jYdlvasItOJnCuI2Q9s4q98g0pCyL3HrcKJu8KNugUl8ahgmZYg38ysLTgQjjXX3H8CJLkAvWrclWfcalw==}
+    dev: false
+
+  /dataloader/2.0.0:
+    resolution: {integrity: sha512-YzhyDAwA4TaQIhM5go+vCLmU0UikghC/t9DTQYZR2M/UvZ1MdOhPezSDZcjj9uqQJOMqjLcpWtyW2iNINdlatQ==}
     dev: false
 
   /debug/2.6.9:
