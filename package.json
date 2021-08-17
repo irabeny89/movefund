@@ -19,6 +19,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test": "jest --watch",
     "lint": "next lint"
   },
   "dependencies": {
@@ -40,10 +41,21 @@
     "react-icons": "^4.2.0"
   },
   "devDependencies": {
+    "@testing-library/dom": "^8.1.0",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^12.0.0",
+    "@testing-library/user-event": "^13.2.1",
     "@types/jsonwebtoken": "^8.5.4",
     "@types/react": "17.0.16",
+    "babel-jest": "^27.0.6",
     "eslint": "7.32.0",
     "eslint-config-next": "11.0.1",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^27.0.6",
+    "node-mocks-http": "^1.10.1",
+    "react-test-renderer": "^17.0.2",
+    "ts-jest": "^27.0.4",
+    "ts-loader": "^9.2.5",
     "typescript": "4.3.5"
   }
 }
