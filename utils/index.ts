@@ -7,10 +7,10 @@ import {
   LoginInputType,
   TokenArgsType,
   UserCredentialType,
-  AuthUserType,
   UserType,
 } from "../types";
 import UserModel from "../models/modelUser";
+import { NextApiResponse } from "next";
 
 const getSalt = () => randomBytes(32).toString("hex");
 
@@ -25,8 +25,8 @@ const verifyPassword = async (
   hashedPassword: string,
   salt: string
 ) => {
-  const hash = await hashPassword(password, salt);
-  return hash === hashedPassword;
+  if ((await hashPassword(password, salt)) !== hashedPassword)
+    throw new AuthenticationError("User not found");
 };
 
 const generateToken = ({
@@ -41,27 +41,14 @@ const generateToken = ({
     issuer,
   });
 
-const validatePassword = (password: string) => {
-  if (!password.length) throw new ValidationError("Please enter password");
-  if (password.length < 6)
-    throw new ValidationError("Please make password longer than 5 characters");
-};
-
-const getAuth = ({
-  isAdmin,
-  _id,
-  firstname,
-}: {
-  isAdmin: boolean;
-  firstname: string;
-  _id: string;
-}): {
-  accessToken: string;
-  refreshToken: string;
-  isAdmin: boolean;
-  firstname: string;
-  _id: string;
-} => {
+const genAuth = (
+  {
+    isAdmin,
+    _id,
+    firstname,
+  }: Pick<TokenArgsType, "firstname" | "isAdmin" | "_id">,
+  res: NextApiResponse
+): string => {
   try {
     const accessTokenSecret = process.env.JWT_ACCESS_SECRET!;
     const refreshTokenSecret = process.env.JWT_REFRESH_SECRET!;
@@ -72,6 +59,7 @@ const getAuth = ({
     const accessToken = generateToken({
       secret: accessTokenSecret,
       audience: userScope,
+      isAdmin,
       firstname,
       _id,
       issuer,
@@ -79,33 +67,40 @@ const getAuth = ({
     const refreshToken = generateToken({
       secret: refreshTokenSecret,
       audience: userScope,
+      isAdmin,
       firstname,
       _id,
       issuer,
     });
-    return {
-      firstname,
-      _id,
-      isAdmin,
-      accessToken,
-      refreshToken,
-    };
+    res.setHeader("set-cookie", refreshToken);
+    return accessToken;
   } catch (err) {
     throw new Error("Something went wrong while authenticating.");
   }
 };
 
-export const register = async ({ password, ...rest }: UserCredentialType) => {
+export const register = async (
+  { password, email, ...rest }: UserCredentialType,
+  UserModel: Model<UserType>,
+  res: NextApiResponse
+) => {
   try {
-    validatePassword(password);
+    if (await UserModel.findOne({ email }))
+      throw new ValidationError("User already exist");
+    if (!password.length) throw new ValidationError("Please enter password");
+    if (password.length < 6)
+      throw new ValidationError(
+        "Please make password longer than 5 characters"
+      );
     const salt = getSalt();
     const hashedPassword = await hashPassword(password, salt);
     const { isAdmin, firstname, _id } = await UserModel.create({
       salt,
       hashedPassword,
+      email,
       ...rest,
     });
-    return getAuth({ isAdmin, firstname, _id });
+    return genAuth({ isAdmin, firstname, _id }, res);
   } catch (err) {
     throw err;
   }
@@ -113,17 +108,17 @@ export const register = async ({ password, ...rest }: UserCredentialType) => {
 
 export const logUserIn = async (
   { email, password }: LoginInputType,
-  UserModel: Model<UserType>
-): Promise<AuthUserType | undefined> => {
+  UserModel: Model<UserType>,
+  res: NextApiResponse
+): Promise<string | undefined> => {
   try {
     const user = await UserModel.findOne({ email })
       .select("_id firstname isAdmin hashedPassword salt")
       .exec();
     if (!user) throw new AuthenticationError("User not found!");
-    if ((await hashPassword(password, user.salt)) !== user.hashedPassword)
-      throw new AuthenticationError("Wrong inputs!");
+    await verifyPassword(password, user.hashedPassword, user.salt);
     const { _id, firstname, isAdmin } = user;
-    return getAuth({ _id, firstname, isAdmin });
+    return genAuth({ _id, firstname, isAdmin }, res);
   } catch (error) {
     throw error;
   }
