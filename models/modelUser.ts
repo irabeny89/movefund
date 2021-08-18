@@ -1,9 +1,20 @@
 import { models, Schema, model, Model } from "mongoose";
-import type { UserType } from "../types";
+import type { UserType } from "types";
 
 const schema = new Schema<UserType>(
   {
-    avatar: String,
+    avatar: {
+      type: String,
+      default: "/1naira.jpg"
+    },
+    lastSeen: {
+      type: Date,
+      default: Date.now
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false
+    },
     isAdmin: { type: Boolean, default: false },
     firstname: { type: String, required: "First name is required" },
     lastname: { type: String, required: "Last name is required" },
@@ -15,11 +26,6 @@ const schema = new Schema<UserType>(
       required: [true, "Email is required"],
       lowercase: true,
     },
-    hashedPassword: {
-      type: String,
-      required: "Please provide a password",
-    },
-    salt: String,
     phone: {
       type: String,
       required: "Phone number is required",
@@ -28,6 +34,7 @@ const schema = new Schema<UserType>(
       maxLength: 15,
     },
     street: String,
+    localGovernmentArea: String,
     city: String,
     state: String,
     country: String,
@@ -47,10 +54,6 @@ const schema = new Schema<UserType>(
   },
   { timestamps: true }
 );
-
-// const UserModel = model<UserType>("User", schema);
-
-// export default (models["User"] as typeof UserModel) || UserModel;
 
 export default (models.User as Model<UserType, {}, {}>) ||
   model<UserType>("User", schema);
