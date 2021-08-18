@@ -13,16 +13,17 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    // "baseUrl": ".",
-    // "paths": {
-    //   "@/components": ["components/*"],
-    //   "@/pages": ["pages/*"],
-    //   "@/models": ["models/*"],
-    //   "@/datasources": ["datasources/*"],
-    //   "@/graphql": ["graphql/*"],
-    //   "@/styles": ["styles/*"]
-    // }
+    "baseUrl": ".",
+    "paths": {
+      "@/components/*": ["components/*"],
+      "@/pages/*": ["pages/*"],
+      "@/models/*": ["models/*"],
+      "@/graphql/*": ["graphql/*"],
+      "@/styles/*": ["styles/*"],
+      "@/utils/*": ["utils/*"],
+      "@/root/*": ["../next-ts-movemoney/*"]
+    }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "jest.config.js", "jest.setup.js"],
   "exclude": ["node_modules"]
 }
