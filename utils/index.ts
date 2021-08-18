@@ -11,7 +11,7 @@ export const create = async <T = any>(
     const isExisting = await DocModel.findOne({ email: data.email });
     if (isExisting) throw new ValidationError("Already existing");
   }
-  return await DocModel.create(data);
+  return await DocModel.create({ ...data, accountNumber: data.phone });
 };
 
 export const read = async <T = any>(
