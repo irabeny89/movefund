@@ -3,28 +3,43 @@ import { gql } from "apollo-server-micro";
 const typeDefs = gql`
   type Query {
     hello: String
-    register(credentials: Credentials!): User!
+    getUser(id: ID!): User
+    getAllUsers: [User]!
   }
 
-  input Credentials {
-    firstname: String
-    lastname:  String
-    email: String
-    password: String
-    phone: String
+  type Mutation {
+    register(userInfo: UserInfo!): User!
+    updateUser(id: ID!, userUpdate: UserUpdate): String!
+    removeUser(id: ID!): String!
+  }
+
+  input UserUpdate {
+    avatar: String
+    street: String
+    localGovernmentArea: String
+    city: String
+    state: String
+    country: String
+  }
+
+  input UserInfo {
+    firstname: String!
+    lastname: String!
+    email: String!
+    phone: String!
+    isAdmin: Boolean!
   }
 
   type User {
     _id: ID!
     firstname: String!
-    lastname:  String!
+    lastname: String!
     email: String!
-    password: String!
-    salt: String!
     phone: String!
     isAdmin: Boolean!
     avatar: String
     street: String
+    localGovernmentArea: String
     city: String
     state: String
     country: String
