@@ -1,7 +1,7 @@
 import type { GraphContextType, UserType } from "types";
-import { ValidationError, UserInputError } from "apollo-server-micro";
+import { create, read, remove, update } from "../utils";
 
-const mutationResponse = "Completed";
+export const mutationResponse = "Completed";
 
 const resolvers = {
   Query: {
@@ -10,13 +10,7 @@ const resolvers = {
       _: any,
       { id }: { id: string },
       { users }: GraphContextType
-    ): Promise<UserType> => {
-      try {
-        return await users.load(id);
-      } catch (error) {
-        throw new UserInputError("ID not existing");
-      }
-    },
+    ): Promise<UserType> => await read<UserType>(id, users),
     getAllUsers: async (
       _: any,
       __: any,
@@ -28,11 +22,7 @@ const resolvers = {
       _: any,
       { userInfo }: { userInfo: UserType },
       { UserModel }: GraphContextType
-    ): Promise<UserType> => {
-      const isExisting = await UserModel.findOne({ email: userInfo.email });
-      if (isExisting) throw new ValidationError("Already existing");
-      return await UserModel.create(userInfo);
-    },
+    ): Promise<UserType> => await create<UserType>(UserModel, userInfo),
     updateUser: async (
       _: any,
       {
@@ -51,23 +41,12 @@ const resolvers = {
         >;
       },
       { UserModel }: GraphContextType
-    ) => {
-      const isExisting = await UserModel.findByIdAndUpdate(
-        id,
-        userUpdate
-      ).exec();
-      if (!isExisting) throw new UserInputError("ID not existing");
-      return isExisting;
-    },
+    ): Promise<string> => await update<UserType>(UserModel, id, userUpdate),
     removeUser: async (
       _: any,
       { id }: { id: string },
       { UserModel }: GraphContextType
-    ): Promise<string> => {
-      const isExisting = await UserModel.findByIdAndDelete(id).exec();
-      if (!isExisting) throw new UserInputError("ID not existing");
-      return mutationResponse;
-    },
+    ): Promise<string> => await remove<UserType>(UserModel, id),
   },
 };
 
