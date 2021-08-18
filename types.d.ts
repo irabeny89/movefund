@@ -1,40 +1,11 @@
 import { MongoDataSource } from "apollo-datasource-mongodb";
 import mongoose, { Document, Connection, Model } from "mongoose";
-import { NextApiRequest } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 import Dataloader from "dataloader"
 
 type Timestamp = {
   createdAt?: Date;
   updatedAt?: Date;
-};
-
-type DatasourcesType = {
-  [name: string]: MongoDataSource<UserType | MoneyInType | MoneyOutType>;
-};
-
-export type UserCredentialType = {
-  firstname: string;
-  lastname: string;
-  email: string;
-  password: string;
-  phone: string;
-  isAdmin: boolean;
-};
-
-export type TokenArgsType = {
-  id: string;
-  firstname: string;
-  secret: string;
-  audience: string;
-  issuer: string;
-};
-
-export type AuthUserType = {
-  id: string;
-  firstname: string;
-  isAdmin: boolean;
-  accessToken: string;
-  refreshToken: string;
 };
 
 export type Fields = {
@@ -48,13 +19,15 @@ export type Fields = {
 
 export type GraphContextType = {
   dataSources?: DatasourcesType;
-  users: DataLoader<unknown, UserType, unknown>
+  users: Dataloader<unknown, UserType, unknown>
   moneyIns: Dataloader<unknown, MoneyInType, unknown>,
   moneyOuts: Dataloader<unknown, MoneyOutType, unknown>,
+  UserModel: Model<UserType>
 } & ContextArgType;
 
 export type ContextArgType = {
   req: NextApiRequest;
+  res: NextApiResponse
 };
 
 export type UserType = {
@@ -64,10 +37,9 @@ export type UserType = {
   firstname: string;
   lastname: string;
   email: string;
-  hashedPassword: string;
-  salt: string;
   phone: string;
   street?: string;
+  localGovernmentArea?: string;
   city?: string;
   state?: string;
   country?: string;
