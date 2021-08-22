@@ -1,83 +1,71 @@
-import { MongoDataSource } from "apollo-datasource-mongodb";
 import mongoose, { Document, Connection, Model } from "mongoose";
 import { NextApiRequest, NextApiResponse } from "next";
-import Dataloader from "dataloader"
+import Dataloader from "dataloader";
 
-type Timestamp = {
+type TimestampAndId = {
+  _id?: mongoose.Types.ObjectId;
   createdAt?: Date;
   updatedAt?: Date;
 };
 
-export type Fields = {
-  [fieldName: string]:
-    | string
-    | number
-    | boolean
-    | mongoose.Types.ObjectId
-    | (string | number | boolean | mongoose.Types.ObjectId)[];
-};
-
 export type GraphContextType = {
-  dataSources?: DatasourcesType;
-  users: Dataloader<unknown, UserType, unknown>
-  moneyIns: Dataloader<unknown, MoneyInType, unknown>,
-  moneyOuts: Dataloader<unknown, MoneyOutType, unknown>,
-  UserModel: Model<UserType>
+  users: Dataloader<unknown, UserType, unknown>;
+  transfersIn: Dataloader<unknown, TransferInType, unknown>;
+  transfersOut: Dataloader<unknown, TransferOutType, unknown>;
+  withdrawals: Dataloader<unknown, WithdrawalType>;
+  loans: Dataloader<unknown, LoanType, unknown>;
+  UserModel: Model<UserType>;
+  TransferInModel: Model<TransferInType>;
+  TransferOutModel: Model<TransferOutType>;
+  WithdrawalModel: Model<WithdrawalType>;
+  LoanModel: Model<LoanType>;
 } & ContextArgType;
 
 export type ContextArgType = {
   req: NextApiRequest;
-  res: NextApiResponse
+  res: NextApiResponse;
 };
 
 export type UserType = {
-  _id?: mongoose.Types.ObjectId;
-  avatar?: string;
-  isAdmin: boolean;
+  isDeleted?: boolean;
+  isAdmin?: boolean;
   firstname: string;
   lastname: string;
   email: string;
   phone: string;
-  street?: string;
-  localGovernmentArea?: string;
-  city?: string;
-  state?: string;
-  country?: string;
-  accountNumber?: string;
   accountBalance?: number;
-  transaction?: {
-    moneyOuts: mongoose.Types.ObjectId[] | MoneyOutType[];
-    moneyIns: mongoose.Types.ObjectId[] | MoneyInType[];
-  };
-  loan?: {
-    loanBalance: number;
-    deadline: Date;
-    penaltyMultiplier: number;
-    interest: number;
-    loanDate: Date;
-  };
-} & Timestamp
+  transfersOut?: mongoose.Types.ObjectId[] | TransferOutType[];
+  transfersIn?: mongoose.Types.ObjectId[] | TransferInType[];
+  withdrawals?: mongoose.Types.ObjectId[] | Withdrawal[];
+  loans?: mongoose.Types.ObjectId[] | LoanType[];
+  selfTransfers?: mongoose.Types.ObjectId[] | SelfTransferType[];
+} & TimestampAndId;
 
-export type MoneyOutType = {
-  _id?: mongoose.Types.ObjectId;
-  amount: number;
-  balanceBefore: number;
-  balanceAfter: number;
-  recipient: {
-    firstname: string;
-    lastname: string;
-    accountNumber: string;
-  };
-} & Timestamp
+export type LoanType = {
+  status: "pending" | "approved" | "disapproved"
+  maxLoanable?: number;
+  monthlyInterestRate?: number;
+  totalInterest?: number;
+  amount?: number;
+  amountDue?: number;
+  deadline?: Date;
+  isPaid: boolean;
+} & TimestampAndId;
 
-export type MoneyInType = {
-  _id?: mongoose.Types.ObjectId;
+export type SelfTransferType = {
   amount: number;
-  balanceBefore: number;
-  balanceAfter: number;
-  sender: {
-    firstname: string;
-    lastname: string;
-    accountNumber: string;
-  };
-} & Timestamp
+} & TimestampAndId;
+
+export type TransferOutType = {
+  amount: number;
+  recipient: mongoose.Types.ObjectId | UserType;
+} & TimestampAndId;
+
+export type TransferInType = {
+  amount: number;
+  sender: mongoose.Types.ObjectId | UserType;
+} & TimestampAndId;
+
+export type WithdrawalType = {
+  amount: number;
+} & TimestampAndId;
