@@ -12,13 +12,14 @@ export type GraphContextType = {
   users: Dataloader<unknown, UserType, unknown>;
   transfersIn: Dataloader<unknown, TransferInType, unknown>;
   transfersOut: Dataloader<unknown, TransferOutType, unknown>;
-  withdrawals: Dataloader<unknown, WithdrawalType>;
+  withdrawals: Dataloader<unknown, WithdrawType>;
   loans: Dataloader<unknown, LoanType, unknown>;
   UserModel: Model<UserType>;
   TransferInModel: Model<TransferInType>;
   TransferOutModel: Model<TransferOutType>;
-  WithdrawalModel: Model<WithdrawalType>;
+  WithdrawalModel: Model<WithdrawType>;
   LoanModel: Model<LoanType>;
+  SelfTransferModel: Model<SelfTransferType>;
 } & ContextArgType;
 
 export type ContextArgType = {
@@ -42,7 +43,7 @@ export type UserType = {
 } & TimestampAndId;
 
 export type LoanType = {
-  status: "pending" | "approved" | "disapproved"
+  status: "pending" | "approved" | "disapproved";
   maxLoanable?: number;
   monthlyInterestRate?: number;
   totalInterest?: number;
@@ -66,6 +67,6 @@ export type TransferInType = {
   sender: mongoose.Types.ObjectId | UserType;
 } & TimestampAndId;
 
-export type WithdrawalType = {
+export type WithdrawType = {
   amount: number;
 } & TimestampAndId;
