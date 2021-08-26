@@ -6,6 +6,7 @@ specifiers:
   '@testing-library/jest-dom': ^5.14.1
   '@testing-library/react': ^12.0.0
   '@testing-library/user-event': ^13.2.1
+  '@types/cookie': ^0.4.1
   '@types/jsonwebtoken': ^8.5.4
   '@types/lodash': ^4.14.172
   '@types/react': 17.0.16
@@ -14,6 +15,7 @@ specifiers:
   apollo-server-micro: ^3.1.1
   babel-jest: ^27.0.6
   bootstrap: ^5.0.2
+  cookie: ^0.4.1
   dataloader: ^2.0.0
   deepmerge: ^4.2.2
   eslint: 7.32.0
@@ -44,6 +46,7 @@ dependencies:
   apollo-server-core: 3.1.2_graphql@15.5.1
   apollo-server-micro: 3.1.2_graphql@15.5.1+micro@9.3.4
   bootstrap: 5.1.0
+  cookie: 0.4.1
   dataloader: 2.0.0
   deepmerge: 4.2.2
   graphql: 15.5.1
@@ -64,6 +67,7 @@ devDependencies:
   '@testing-library/jest-dom': 5.14.1
   '@testing-library/react': 12.0.0_react-dom@17.0.2+react@17.0.2
   '@testing-library/user-event': 13.2.1_@testing-library+dom@8.1.0
+  '@types/cookie': 0.4.1
   '@types/jsonwebtoken': 8.5.4
   '@types/lodash': 4.14.172
   '@types/react': 17.0.16
@@ -1225,6 +1229,10 @@ packages:
     dependencies:
       '@types/node': 16.4.13
     dev: false
+
+  /@types/cookie/0.4.1:
+    resolution: {integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==}
+    dev: true
 
   /@types/graceful-fs/4.1.5:
     resolution: {integrity: sha512-anKkLmZZ+xm4p8JWBf4hElkM4XR+EZeA2M9BAkkTldmcyDY4mbdIJnRghDJH3Ov5ooY7/UAoENtmdMSkaAd7Cw==}
@@ -2405,6 +2413,11 @@ packages:
     dependencies:
       safe-buffer: 5.1.2
     dev: true
+
+  /cookie/0.4.1:
+    resolution: {integrity: sha512-ZwrFkGJxUR3EIoXtO+yVE69Eb7KlixbaeAWfBQB9vVsNn/o+Yw69gBWSSDK825hQNdN+wF8zELf3dFNl/kxkUA==}
+    engines: {node: '>= 0.6'}
+    dev: false
 
   /core-js-pure/3.16.0:
     resolution: {integrity: sha512-wzlhZNepF/QA9yvx3ePDgNGudU5KDB8lu/TRPKelYA/QtSnkS/cLl2W+TIdEX1FAFcBr0YpY7tPDlcmXJ7AyiQ==}
