@@ -18,6 +18,11 @@ const schema = new Schema<UserType>(
       required: [true, "Email is required"],
       lowercase: true,
     },
+    password: {
+      type: String,
+      required: true
+    },
+    salt: String,
     phone: {
       type: String,
       required: "Phone number is required",
