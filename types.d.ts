@@ -1,11 +1,26 @@
 import mongoose, { Document, Connection, Model } from "mongoose";
 import { NextApiRequest, NextApiResponse } from "next";
 import Dataloader from "dataloader";
+import { JwtPayload } from "jsonwebtoken";
 
 type TimestampAndId = {
   _id?: mongoose.Types.ObjectId;
   createdAt?: Date;
   updatedAt?: Date;
+};
+
+export type TokenType = {
+  accessToken: string;
+  refreshToken: string;
+};
+
+export type RefreshTokenType = {
+  token: string;
+} & TimestampAndId;
+
+export type UserPayloadType = {
+  id: mongoose.Types.ObjectId;
+  isAdmin: boolean;
 };
 
 export type GraphContextType = {
@@ -20,6 +35,7 @@ export type GraphContextType = {
   WithdrawalModel: Model<WithdrawType>;
   LoanModel: Model<LoanType>;
   SelfTransferModel: Model<SelfTransferType>;
+  RefreshTokenModel: Model<RefreshTokenType>;
 } & ContextArgType;
 
 export type ContextArgType = {
@@ -32,6 +48,8 @@ export type UserType = {
   isAdmin?: boolean;
   firstname: string;
   lastname: string;
+  password: string;
+  salt: string;
   email: string;
   phone: string;
   accountBalance?: number;
@@ -43,14 +61,14 @@ export type UserType = {
 } & TimestampAndId;
 
 export type LoanType = {
-  status: "pending" | "approved" | "disapproved";
+  status?: "PENDING" | "APPROVED" | "DISAPPROVED";
+  isPaid?: boolean;
   maxLoanable?: number;
   monthlyInterestRate?: number;
   totalInterest?: number;
-  amount?: number;
+  amount: number;
   amountDue?: number;
   deadline?: Date;
-  isPaid: boolean;
 } & TimestampAndId;
 
 export type SelfTransferType = {
