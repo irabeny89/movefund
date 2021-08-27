@@ -1,7 +1,6 @@
 import { MicroRequest } from "apollo-server-micro/dist/types";
 import { NextApiResponse } from "next";
 import apolloServer from "../../graphql";
-import dbConnection from "../../models";
 
 const server = apolloServer.start();
 const handler = async (req: MicroRequest, res: NextApiResponse) => {
@@ -18,7 +17,6 @@ const handler = async (req: MicroRequest, res: NextApiResponse) => {
     res.end();
     return false;
   }
-  // await dbConnection()
   await server;
   await apolloServer.createHandler({ path: "/api/graphql" })(req, res);
 };
