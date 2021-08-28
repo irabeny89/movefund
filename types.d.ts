@@ -24,17 +24,10 @@ export type UserPayloadType = {
 };
 
 export type GraphContextType = {
-  users: Dataloader<unknown, UserType, unknown>;
-  transfersIn: Dataloader<unknown, TransferInType, unknown>;
-  transfersOut: Dataloader<unknown, TransferOutType, unknown>;
-  withdrawals: Dataloader<unknown, WithdrawType>;
-  loans: Dataloader<unknown, LoanType, unknown>;
   UserModel: Model<UserType>;
-  TransferInModel: Model<TransferInType>;
-  TransferOutModel: Model<TransferOutType>;
-  WithdrawalModel: Model<WithdrawType>;
+  DebitModel: Model<DebitType>;
+  CreditModel: Model<CreditType>;
   LoanModel: Model<LoanType>;
-  SelfTransferModel: Model<SelfTransferType>;
   RefreshTokenModel: Model<RefreshTokenType>;
 } & ContextArgType;
 
@@ -52,12 +45,10 @@ export type UserType = {
   salt: string;
   email: string;
   phone: string;
-  accountBalance?: number;
-  transfersOut?: mongoose.Types.ObjectId[] | TransferOutType[];
-  transfersIn?: mongoose.Types.ObjectId[] | TransferInType[];
-  withdrawals?: mongoose.Types.ObjectId[] | Withdrawal[];
+  balance?: number;
+  credits?: mongoose.Types.ObjectId[] | CreditType[];
+  debits?: mongoose.Types.ObjectId[] | DebitType[];
   loans?: mongoose.Types.ObjectId[] | LoanType[];
-  selfTransfers?: mongoose.Types.ObjectId[] | SelfTransferType[];
 } & TimestampAndId;
 
 export type LoanType = {
@@ -71,20 +62,14 @@ export type LoanType = {
   deadline?: Date;
 } & TimestampAndId;
 
-export type SelfTransferType = {
+export type CreditType = {
   amount: number;
+  from: string;
+  option: "USER" | "ONLINE";
 } & TimestampAndId;
 
-export type TransferOutType = {
+export type DebitType = {
   amount: number;
-  recipient: mongoose.Types.ObjectId | UserType;
-} & TimestampAndId;
-
-export type TransferInType = {
-  amount: number;
-  sender: mongoose.Types.ObjectId | UserType;
-} & TimestampAndId;
-
-export type WithdrawType = {
-  amount: number;
+  to: mongoose.Types.ObjectId;
+  option: "WITHDRAW" | "TRANSFER";
 } & TimestampAndId;
