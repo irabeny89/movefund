@@ -5,8 +5,19 @@ const schema = new Schema<LoanType>(
   {
     status: {
       type: String,
-      enum: ["pending", "approved", "disapproved"],
-      required: true,
+      enum: ["PENDING", "APPROVED", "DISAPPROVED"],
+      default: "PENDING",
+    },
+    amount: {
+      type: Number,
+      min: 0,
+      set(this: any, v: number) {
+        if (v > this.maxLoanable)
+          throw new Error(
+            "Loan exceed limit. Max loanable is " + this.maxLoanable
+          );
+        return v;
+      },
     },
     isPaid: { type: Boolean, default: false },
     maxLoanable: {
@@ -22,7 +33,6 @@ const schema = new Schema<LoanType>(
         return this.amountDue - this.amount;
       },
     },
-    amount: { type: Number, min: 0 },
     amountDue: {
       type: Number,
       min: 0,

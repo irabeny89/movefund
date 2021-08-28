@@ -20,7 +20,7 @@ const schema = new Schema<UserType>(
     },
     password: {
       type: String,
-      required: true
+      required: true,
     },
     salt: String,
     phone: {
@@ -29,12 +29,10 @@ const schema = new Schema<UserType>(
       trim: true,
       maxLength: 15,
     },
-    accountBalance: { type: Number, default: 0, min: 0 },
-    transfersOut: [{ type: Schema.Types.ObjectId, ref: "TransferOut" }],
-    transfersIn: [{ type: Schema.Types.ObjectId, ref: "TransferIn" }],
-    withdrawals: [{ type: Schema.Types.ObjectId, ref: "Withdrawal" }],
+    balance: { type: Number, default: 0, min: 0 },
+    credits: [{ type: Schema.Types.ObjectId, ref: "Credit" }],
+    debits: [{ type: Schema.Types.ObjectId, ref: "Debit" }],
     loans: [{ type: Schema.Types.ObjectId, ref: "Loan" }],
-    selfTransfers: [{ type: Schema.Types.ObjectId, ref: "SelfTransfer" }],
   },
   { timestamps: true }
 );
