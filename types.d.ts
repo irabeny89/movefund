@@ -28,6 +28,7 @@ export type GraphContextType = {
   DebitModel: Model<DebitType>;
   CreditModel: Model<CreditType>;
   LoanModel: Model<LoanType>;
+  WithdrawalModel: Model<WithdrawalType>;
   RefreshTokenModel: Model<RefreshTokenType>;
 } & ContextArgType;
 
@@ -45,10 +46,12 @@ export type UserType = {
   salt: string;
   email: string;
   phone: string;
+  currency: "NGN" | "USD";
   balance?: number;
   credits?: mongoose.Types.ObjectId[] | CreditType[];
   debits?: mongoose.Types.ObjectId[] | DebitType[];
   loans?: mongoose.Types.ObjectId[] | LoanType[];
+  withdrawals?: mongoose.Types.ObjectId[] | WithdrawalType[];
 } & TimestampAndId;
 
 export type LoanType = {
@@ -65,11 +68,14 @@ export type LoanType = {
 export type CreditType = {
   amount: number;
   from: string;
-  option: "USER" | "ONLINE";
+  method: "APP_TRANSFER" | "PAYMENT_GATEWAY";
 } & TimestampAndId;
 
 export type DebitType = {
   amount: number;
   to: mongoose.Types.ObjectId;
-  option: "WITHDRAW" | "TRANSFER";
+} & TimestampAndId;
+
+export type WithdrawalType = {
+  amount: number;
 } & TimestampAndId;
