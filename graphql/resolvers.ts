@@ -1,26 +1,14 @@
-import {
-  registerUser,
-  getUserById,
-  login,
-  refreshToken,
-  logout,
-  getAllUsers,
-  removeUser,
-  requestLoan,
-  replyLoanRequest,
-  // addUserTransferOut,
-  // addUserWithdrawal,
-  // getAllUsersLoans,
-  // getAllUsersTransfersIn,
-  // getAllUsersTransfersOut,
-  // getAllUsersWithdrawals,
-  // getUserLoan,
-  // getUserTransferIn,
-  // getUserTransferOut,
-  // getUserWithdrawal,
-  // updateUserLoan,
-  // updateUser,
-} from "@/utils/index";
+import registerUser from "@/utils/registerUser";
+import login from "@/utils/login";
+import refreshToken from "@/utils/refreshToken";
+import logout from "@/utils/logout";
+import getAllUsers from "@/utils/getAllUsers";
+import requestLoan from "@/utils/requestLoan";
+import replyLoanRequest from "@/utils/replyLoanRequest";
+import sendMoney from "@/utils/sendMoney";
+import paybackLoan from "@/utils/paybackLoan";
+import getUserById from "@/utils/getUserById";
+import getMyProfile from "@/utils/getMyProfile";
 
 export const mutationResponse = "Completed";
 const hello = () => "world!";
@@ -28,29 +16,19 @@ const resolvers = {
   Query: {
     hello,
     refreshToken,
-    logout,
-    getUserById,
     getAllUsers,
-    // getUserTransferIn,
-    // getAllUsersTransfersIn,
-    // getUserTransferOut,
-    // getAllUsersTransfersOut,
-    // getUserWithdrawal,
-    // getAllUsersWithdrawals,
-    // getUserLoan,
-    // getAllUsersLoans
+    getUserById,
+    getMyProfile,
   },
   Mutation: {
     registerUser,
     login,
-    removeUser,
+    logout,
     requestLoan,
-    replyLoanRequest
-    // updateUser,
-    // addUserTransferOut,
-    // addUserWithdrawal,
-    // updateUserLoan
-  }
+    replyLoanRequest,
+    sendMoney,
+    paybackLoan,
+  },
 };
 
 export default resolvers;

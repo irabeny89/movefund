@@ -4,42 +4,19 @@ const typeDefs = gql`
   type Query {
     hello: String
     refreshToken: Token!
-    logout: String!
-    getUserById(id: ID!): User!
     getAllUsers: [User]!
-    # getUserTransferIn(id: ID!): TransferIn
-    # getAllUsersTransfersIn: [TransferIn]!
-    # getUserTransferOut(id: ID!): TransferOut!
-    # getAllUsersTransfersOut: [TransferOut]!
-    # getUserWithdrawal(id: ID!): Withdrawal!
-    # getAllUsersWithdrawals: [Withdrawal]!
-    # getUserLoan(id: ID!): Loan!
-    # getAllUsersLoans: [Loan]!
-    # getUserSelfTransfer(id: ID!): SelfTransfer!
-    # getAllSelfTransfers: [SelfTransfer]!
+    getUserById(id: ID!): User!
+    getMyProfile: User!
   }
 
   type Mutation {
     registerUser(userData: UserInput!): Token!
     login(email: String!, password: String!): Token!
-    removeUser(id: ID!): String!
+    logout: String!
     requestLoan(userId: ID!, amount: Float!): String!
-    replyLoanRequest(userId: ID!, reply: LoanStatus!): String!
-    # updateUser(id: ID!, userUpdate: UserUpdate!): String!
-    # addUserTransferOut(senderId: ID!, transferOutInput: TransferOutInput!): TransferOut!
-    # addUserWithdrawal(id: ID!, withdrawalInput: WithdrawalInput!): Withdrawal!
-    # updateUserLoan(id: ID!, loanInput: LoanInput!): String!
-    # addUserSelfTransfer(id: ID!, selfTransferInput: SelfTransfer!): SelfTransfer!
-  }
-
-  input UserUpdate {
-    isDeleted: Boolean
-    accountBalance: Float
-    transfersOut: [ID]
-    transfersIn: [ID]
-    withdrawals: [ID]
-    loans: [ID]
-    selfTransfers: [ID]
+    replyLoanRequest(userId: ID!, reply: Reply!): String!
+    sendMoney(to: ID!, amount: Float!): String!
+    paybackLoan(amount: Float!, method: PaybackMethod!): String!
   }
 
   input UserInput {
@@ -50,24 +27,40 @@ const typeDefs = gql`
     phone: String!
   }
 
-  input TransferOutInput {
-    amountSent: Float!
-    recipient: ID!
-  }
-
-  input WithdrawalInput {
-    amountWithdrawn: Float!
-  }
-
   input LoanUpdate {
     status: LoanStatus!
     isPaid: Boolean!
+  }
+
+  enum PaybackMethod {
+    APP_TRANSFER
+    PAYMENT_GATEWAY
+  }
+
+  enum CreditMethod {
+    APP_TRANSFER
+    PAYMENT_GATEWAY
+  }
+
+  enum Reply {
+    APPROVED
+    DISAPPROVED
   }
 
   enum LoanStatus {
     PENDING
     APPROVED
     DISAPPROVED
+  }
+
+  enum DebitOption {
+    WITHDRAW
+    TRANSFER
+  }
+
+  enum CurrencyOption {
+    NGN
+    USD
   }
 
   type Token {
@@ -83,34 +76,29 @@ const typeDefs = gql`
     lastname: String!
     email: String!
     phone: String!
-    accountBalance: Float!
-    transfersOut: [TransferOut]!
-    transfersIn: [TransferIn]!
-    withdrawals: [Withdrawal]!
+    currency: CurrencyOption!
+    balance: Float!
+    credits: [Credit]!
+    debits: [Debit]!
     loans: [Loan]!
-    selfTransfers: [SelfTransfer]!
+    withdrawals: [Withdrawal]!
     createdAt: String!
     updatedAt: String!
   }
 
-  type TransferOut {
+  type Credit {
     _id: ID!
     amount: Float!
-    recipient: User!
-    createdAt: String!
-    updatedAt: String!
-  }
-  type TransferIn {
-    _id: ID!
-    amount: Float!
-    sender: User!
+    from: String!
+    method: CreditMethod!
     createdAt: String!
     updatedAt: String!
   }
 
-  type Withdrawal {
+  type Debit {
     _id: ID!
     amount: Float!
+    to: User!
     createdAt: String!
     updatedAt: String!
   }
@@ -120,6 +108,7 @@ const typeDefs = gql`
     status: LoanStatus!
     isPaid: Boolean!
     maxLoanable: Float!
+    monthlyInterestRate: Float!
     totalInterest: Float!
     amount: Float!
     amountDue: Float!
@@ -128,7 +117,7 @@ const typeDefs = gql`
     updatedAt: String!
   }
 
-  type SelfTransfer {
+  type Withdrawal {
     _id: ID!
     amount: Float!
     createdAt: String!
