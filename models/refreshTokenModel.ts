@@ -3,7 +3,8 @@ import type { RefreshTokenType } from "types";
 
 const schema = new Schema<RefreshTokenType>(
   {
-    token: { type: String, unique: true }
+    email: String,
+    token: { type: String, unique: true },
   },
   { timestamps: true }
 );

@@ -25,7 +25,7 @@ const schema = new Schema<LoanType>(
       min: 0,
       default: 10000,
     },
-    monthlyInterestRate: { type: Number, min: 0, default: 0.1 },
+    monthlyInterestRate: { type: Number, min: 0, default: 0.3 },
     totalInterest: {
       type: Number,
       min: 0,

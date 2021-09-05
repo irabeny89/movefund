@@ -5,9 +5,9 @@ const schema = new Schema<CreditType>(
   {
     amount: { type: Number, required: true, min: 0 },
     from: String,
-    option: {
+    method: {
       type: String,
-      enum: ["USER", "ONLINE"],
+      enum: ["APP_TRANSFER", "PAYMENT_GATEWAY"],
     },
   },
   { timestamps: true }

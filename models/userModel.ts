@@ -29,10 +29,14 @@ const schema = new Schema<UserType>(
       trim: true,
       maxLength: 15,
     },
+    currency: {
+      type: String, enum: ["NGN", "USD"], default: "NGN"
+    },
     balance: { type: Number, default: 0, min: 0 },
     credits: [{ type: Schema.Types.ObjectId, ref: "Credit" }],
     debits: [{ type: Schema.Types.ObjectId, ref: "Debit" }],
     loans: [{ type: Schema.Types.ObjectId, ref: "Loan" }],
+    withdrawals: [{ type: Schema.Types.ObjectId, ref: "Withdrawal" }],
   },
   { timestamps: true }
 );

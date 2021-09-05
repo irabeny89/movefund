@@ -5,10 +5,6 @@ const schema = new Schema<DebitType>(
   {
     amount: { type: Number, required: true, min: 0 },
     to: { type: Schema.Types.ObjectId, ref: "User" },
-    option: {
-      type: String,
-      enum: ["WITHDRAW", "TRANSFER"],
-    },
   },
   { timestamps: true }
 );
