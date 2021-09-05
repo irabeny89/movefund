@@ -10,6 +10,7 @@ import UserModel from "@/models/userModel";
 import DebitModel from "@/models/debitModel";
 import CreditModel from "@/models/creditModel";
 import LoanModel from "@/models/loanModel";
+import WithdrawalModel from "@/models/withdrawalModel";
 import RefreshTokenModel from "@/models/refreshTokenModel";
 import dbConnection from "@/models/index";
 
@@ -30,6 +31,7 @@ const apolloServer = new ApolloServer({
       DebitModel,
       CreditModel,
       LoanModel,
+      WithdrawalModel,
       RefreshTokenModel,
     };
   },
