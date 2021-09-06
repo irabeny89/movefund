@@ -18,9 +18,7 @@ const getAllUsers = async (
   const users = await UserModel.find({})
     .populate(USER_POPULATION_OPTION)
     .exec();
-console.log('====================================');
-console.log(users);
-console.log('====================================');
+
   return users;
 };
 
