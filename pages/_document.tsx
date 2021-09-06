@@ -5,7 +5,10 @@ class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
-          <meta name="description" content="Send and receive money using the web app" />
+          <meta
+            name="description"
+            content="Send and receive money or loan using this web app"
+          />
         </Head>
         <body>
           <Main />
