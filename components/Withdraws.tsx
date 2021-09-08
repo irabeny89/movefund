@@ -4,7 +4,7 @@ import Head from "next/head";
 const withdrawsStyle = {
   paddingBottom: "20rem",
 };
-const withdraws = () => (
+const Withdraws = () => (
   <Layout>
     <Head>
       <title>MoveMoney | Withdraws History</title>
@@ -18,4 +18,4 @@ const withdraws = () => (
   </Layout>
 );
 
-export default withdraws;
+export default Withdraws;

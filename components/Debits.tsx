@@ -4,7 +4,7 @@ import Head from "next/head";
 const debitsStyle = {
   paddingBottom: "20rem",
 };
-const credits = () => (
+const Debits = () => (
   <Layout>
     <Head>
       <title>MoveMoney | Debits History</title>
@@ -17,4 +17,4 @@ const credits = () => (
   </Layout>
 );
 
-export default credits;
+export default Debits;
