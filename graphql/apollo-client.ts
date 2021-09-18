@@ -2,6 +2,7 @@ import { ApolloClient, InMemoryCache, HttpLink, from } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { RetryLink } from "@apollo/client/link/retry";
 import { accessTokenVar } from "@/graphql/reactiveVariables";
+import axios from "axios";
 
 const url = "/api/graphql";
 const query = `{
@@ -10,29 +11,16 @@ const query = `{
   }
 }
 `;
-fetch(url, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    query,
-  }),
+axios({
+  method: "post",
+  data: { query },
+  url,
 })
-  .then<{
-    data: {
-      refreshToken: {
-        accessToken: string;
-      };
-    };
-  }>((res) => res.json())
   .then(
-    ({
-      data: {
-        refreshToken: { accessToken },
-      },
-    }) => {
-      accessTokenVar(accessToken);
+    ({ data }) => {
+      console.log(data);
+
+      // accessTokenVar(accessToken);
     }
   )
   .catch((err) => console.error(err));
@@ -65,7 +53,7 @@ const errorLink = onError(
                     : "",
                 },
               });
-              
+
               return forward(operation);
           }
         }
