@@ -25,7 +25,7 @@ const DashboardTabs = ({
     _id,
   },
 }: DashboardProps) => {
-  const payload = usePayload()
+  const { jwtPayload } = usePayload()
   return (
     <Tabs defaultActiveKey="overview" id="uncontrolled-tab" className="mb-3">
       <Tab tabClassName="text-info" eventKey="overview" title="Overview">
@@ -48,7 +48,7 @@ const DashboardTabs = ({
       <Tab tabClassName="text-info" eventKey="debits" title="Debits">
         <Debits debits={debits as unknown as DebitType[]} />
       </Tab>
-      {!payload?.isAdmin! && (
+      {jwtPayload?.aud !== "admin" && (
         <Tab tabClassName="text-info" eventKey="loans" title="Loans">
           <Loans loans={loans as unknown as LoanType[]} />
         </Tab>

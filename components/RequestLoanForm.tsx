@@ -17,7 +17,7 @@ const badgeStyle = { fontSize: "0.9rem" };
 const RequestLoanForm = () => {
   // access token from reactive variable
   const accessToken = useReactiveVar(accessTokenVar);
-  const payload = usePayload();
+  const { jwtPayload } = usePayload();
   // form validation state
   const [validated, setValidated] = useState(false);
   // request mutation function
@@ -48,7 +48,7 @@ const RequestLoanForm = () => {
 
     // execute mutation with variables
     sendRequest({
-      variables: { userId: String(payload?.id), amount: +amount! },
+      variables: { userId: String(jwtPayload?.id), amount: +amount! },
     });
   };
 

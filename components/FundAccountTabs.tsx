@@ -7,15 +7,15 @@ const getActiveTab = (isAdmin: boolean) =>
   isAdmin ? "bankTransfer" : "requestLoan";
 
 const FundAccountTabs = () => {
-  const payload = usePayload();
+  const { jwtPayload } = usePayload();
 
   return (
       <Tabs
-        defaultActiveKey={getActiveTab(payload?.isAdmin!)}
+        defaultActiveKey={getActiveTab(jwtPayload?.aud == "admin")}
         id="uncontrolled-tab"
         className="mb-3"
       >
-        {!payload?.isAdmin! && (
+        {jwtPayload?.aud !== "admin" && (
           <Tab
             tabClassName="text-info"
             eventKey="requestLoan"

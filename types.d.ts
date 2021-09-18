@@ -22,7 +22,6 @@ export type RefreshTokenType = {
 export type UserPayloadType = {
   id?: mongoose.Types.ObjectId;
   isAdmin?: boolean;
-  name?: string
 };
 
 export type GraphContextType = {
