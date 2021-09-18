@@ -3,6 +3,40 @@ import { onError } from "@apollo/client/link/error";
 import { RetryLink } from "@apollo/client/link/retry";
 import { accessTokenVar } from "@/graphql/reactiveVariables";
 
+const url = "/api/graphql";
+const query = `{
+  refreshToken {
+    accessToken
+  }
+}
+`;
+fetch(url, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    query,
+  }),
+})
+  .then<{
+    data: {
+      refreshToken: {
+        accessToken: string;
+      };
+    };
+  }>((res) => res.json())
+  .then(
+    ({
+      data: {
+        refreshToken: { accessToken },
+      },
+    }) => {
+      accessTokenVar(accessToken);
+    }
+  )
+  .catch((err) => console.error(err));
+
 const httpLink = new HttpLink({
   uri: "http://localhost:3000/api/graphql",
   headers: {
@@ -31,6 +65,7 @@ const errorLink = onError(
                     : "",
                 },
               });
+              
               return forward(operation);
           }
         }

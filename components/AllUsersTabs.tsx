@@ -1,7 +1,6 @@
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import AllUsers from "./AllUsers";
-import usersFakeData from "@/models/localData";
 import LoanRequests from "./LoanRequests";
 import { useQuery, useReactiveVar } from "@apollo/client";
 import { GET_ALL_USERS_QUERY } from "@/graphql/documentNodes";
@@ -19,11 +18,11 @@ const AllUsersTabs = () => {
         authorization: accessToken ? `Bearer ${accessToken}` : "",
       },
     },
+    pollInterval: 5000,
   });
+console.log(accessToken, "test access token");
 
   if (loading) return <AjaxFeedback isLoading={loading} />;
-
-  if (error) return <AjaxFeedback error={error} />;
 
   // get all users pending loans
   const getPendingLoans = (usersData: UserType[]) => {
@@ -31,29 +30,36 @@ const AllUsersTabs = () => {
       // get a user loans list
       const loans = user.loans! as LoanType[];
       // filter pending loans
-      const pendingLoans = loans.filter(loan => loan.status === "PENDING")
+      const pendingLoans = loans.filter((loan) => loan.status === "PENDING");
       // return new user with pending loans
       return { ...user, loans: pendingLoans };
     });
     // filter out admin user then return new users list
-    const regularUsers = usersPendingLoanRequest.filter(user => !user.isAdmin)
-    
+    const regularUsers = usersPendingLoanRequest.filter(
+      (user) => !user.isAdmin
+    );
+
     return regularUsers.length < 1 ? [] : regularUsers;
   };
 
   return (
-    <Tabs defaultActiveKey="users" id="uncontrolled-tab" className="mb-3">
-      <Tab tabClassName="text-info" eventKey="users" title="User Dashboards">
-        <AllUsers usersData={data?.getAllUsers!} />
-      </Tab>
-      <Tab
-        tabClassName="text-info"
-        eventKey="loanRequests"
-        title="Reply Loan Requests"
-      >
-        <LoanRequests usersWithPendingLoans={getPendingLoans(data?.getAllUsers!)} />
-      </Tab>
-    </Tabs>
+    <div>
+      {error && <AjaxFeedback error={error} />}
+      <Tabs defaultActiveKey="users" id="uncontrolled-tab" className="mb-3">
+        <Tab tabClassName="text-info" eventKey="users" title="User Dashboards">
+          <AllUsers usersData={data?.getAllUsers!} />
+        </Tab>
+        <Tab
+          tabClassName="text-info"
+          eventKey="loanRequests"
+          title="Reply Loan Requests"
+        >
+          <LoanRequests
+            usersWithPendingLoans={getPendingLoans(data?.getAllUsers!)}
+          />
+        </Tab>
+      </Tabs>
+    </div>
   );
 };
 

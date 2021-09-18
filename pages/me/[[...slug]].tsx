@@ -17,10 +17,10 @@ const { title, pageTitles } = config.appData;
 
 const Me = () => {
   const { query, replace } = useRouter();
-  const payload = usePayload();
+  const { jwtPayload } = usePayload();
 
   useEffect(() => {
-    if (!payload?.id) replace("/");
+    if (!jwtPayload?.id) replace("/");
   });
 
   // route /me

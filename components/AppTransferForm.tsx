@@ -1,16 +1,15 @@
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { FormEvent, useState } from "react";
-import { accessTokenVar, myLastLoanAmountDueVar } from "@/graphql/reactiveVariables";
+import { accessTokenVar } from "@/graphql/reactiveVariables";
 import { useReactiveVar, useMutation } from "@apollo/client";
 import AjaxFeedback from "@/components/AjaxFeedback";
 import { PAYBACK_LOAN_MUTATION } from "@/graphql/documentNodes";
-import Alert from "react-bootstrap/Alert"
+import Alert from "react-bootstrap/Alert";
 
 const AppTransferForm = () => {
   // access token from reactive variable
-  const accessToken = useReactiveVar(accessTokenVar)
-  const myLastLoanAmountDue = useReactiveVar(myLastLoanAmountDueVar);
+  const accessToken = useReactiveVar(accessTokenVar);
   // form validation state
   const [validated, setValidated] = useState(false);
   // payback loan mutation function
@@ -46,10 +45,9 @@ const AppTransferForm = () => {
   };
 
   if (loading) return <AjaxFeedback isLoading={loading} />;
-  
+
   return (
     <div>
-      
       {error && <AjaxFeedback error={error} />}
       {data && <Alert variant="success">{data.paybackLoan}</Alert>}
       <Form noValidate validated={validated} onSubmit={handleSubmit}>

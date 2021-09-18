@@ -17,7 +17,7 @@ const {
 } = config;
 
 export const CREDITS_LOANS_WITHDRAWALS_POPULATION = {
-  path: "credits loans withdrawals"
+  path: "credits loans withdrawals",
 };
 
 export const DEBITS_POPULATION = {
@@ -25,11 +25,11 @@ export const DEBITS_POPULATION = {
   populate: {
     path: "to",
   },
-}
+};
 
 export const AUTHORIZATION_ERROR_MESSAGE = "Authorization failed";
 
-export const LOGIN_ERROR_MESSAGE = "Enter correct email and password"
+export const LOGIN_ERROR_MESSAGE = "Enter correct email and password";
 
 export const setCookie = (
   res: NextApiResponse,
@@ -98,8 +98,10 @@ export const getAccessToken = (authHeader: string | undefined): string | void =>
 
 export const verifyToken = (token: string, secret: Secret) => {
   try {
+    // verify token and return jwt payload
     const decodedToken = verify(token, secret) as JwtPayload & UserPayloadType;
-    return decodedToken
+
+    return decodedToken;
   } catch (error) {
     handleError(error, AuthenticationError, AUTHORIZATION_ERROR_MESSAGE);
   }
@@ -117,8 +119,8 @@ const generateToken = (
   }
 };
 
-const getToken = ({ id, isAdmin, name }: UserPayloadType): TokenType => ({
-  accessToken: generateToken({ id, isAdmin, name }, jwtAccessSecret, {
+const getToken = ({ id, isAdmin }: UserPayloadType): TokenType => ({
+  accessToken: generateToken({ id, isAdmin }, jwtAccessSecret, {
     subject: `${id}`,
     expiresIn: "10m",
     audience: isAdmin ? "admin" : "user",
@@ -135,13 +137,12 @@ const getToken = ({ id, isAdmin, name }: UserPayloadType): TokenType => ({
 });
 
 export const authUser = (
-  { id, isAdmin, name }: UserPayloadType,
+  { id, isAdmin }: UserPayloadType,
   res: NextApiResponse
 ) => {
   const _token = getToken({
     id,
     isAdmin,
-    name,
   });
 
   setCookie(res, "token", _token.refreshToken, {

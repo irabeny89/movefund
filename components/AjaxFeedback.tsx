@@ -22,9 +22,9 @@ const AjaxFeedback = ({
         {spinnerMessage}
       </Spinner>
     )}
-    {error && (
+    {error && error.message !== "Authorization failed" && (
       <Alert variant="danger">
-        <Alert.Heading>Error</Alert.Heading><hr />
+        <Alert.Heading>Alert</Alert.Heading><hr />
         <p>{error.message}</p>
       </Alert>
     )}

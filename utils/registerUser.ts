@@ -25,22 +25,23 @@ const registerUser = async (
   handleError(
     password.length < 6,
     ValidationError,
-    "Password should be longer than 6 characters"
+    "Password should be longer than 6 characters."
   );
   // create user document
   const userDoc = new UserModel({
     ...rest,
     ...(await handleEncryption(password)),
   });
+
   // create access and refresh tokens and set cookie
   const tokenPair = authUser(
-    { id: userDoc._id, isAdmin: userDoc.isAdmin, name: userDoc.firstname },
+    { id: userDoc._id, isAdmin: userDoc.isAdmin },
     res
   );
   // create refresh token document
   const refreshTokenDoc = new RefreshTokenModel({
     token: tokenPair.refreshToken,
-    email: userDoc.email
+    email: userDoc.email,
   });
   // run query with transaction
   const session = await mongoose.startSession();

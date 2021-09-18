@@ -1,10 +1,13 @@
 import mongoose, { connect } from "mongoose";
+import config from "config";
+
+const { dbUrl } = config.environmentVariable
 
 const dbConnection = async () => {
   if (mongoose.connections[0].readyState !== 1) {
     try {
       mongoose.set("debug", true);
-      await connect(process.env.DB_URL!);
+      await connect(dbUrl);
     } catch (err: any) {
       console.error(err.message);
       process.exit(1);

@@ -20,7 +20,7 @@ const brandStyle = {
 
 const Header = () => {
   // get token payload
-  const payload = usePayload();
+  const { currentUser, jwtPayload } = usePayload();
   // create logout mutation
   const [logoutUser, { loading, error }] = useMutation(gql`
     mutation Logout {
@@ -36,8 +36,7 @@ const Header = () => {
     // redirect to home and refresh to clear cache
     location.href = "/";
   };
-
-  return payload ? (
+  return !!jwtPayload ? (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
         <Link href="/">
@@ -47,7 +46,7 @@ const Header = () => {
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
             <NavDropdown
-              title={payload?.name || "Member"}
+              title={currentUser.firstname || "Member"}
               id="collapsible-nav-dropdown"
             >
               <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
