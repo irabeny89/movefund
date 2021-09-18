@@ -20,9 +20,9 @@ const AuthScope = ({
   element = "page",
 }: AuthScopePropsType) => {
   // get decoded payload
-  const payload = usePayload();
+  const { jwtPayload } = usePayload();
   // forbid if not authorized/authenticated
-  if (!payload)
+  if (!jwtPayload)
     return (
       <div style={forbiddenStyle} className="text-center pt-5 h4">
         <Alert variant="danger">
@@ -37,8 +37,8 @@ const AuthScope = ({
     );
   // render children when scope matches
   if (
-    ((element === "page" || element === "nav") && payload && !scope) ||
-    payload?.aud === scope
+    ((element === "page" || element === "nav") && jwtPayload && !scope) ||
+    jwtPayload?.aud === scope
   )
     return <>{children}</>;
   // if no scoped audience hide element
