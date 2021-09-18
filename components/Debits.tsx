@@ -1,20 +1,30 @@
-import Layout from "@/components/Layout";
-import Head from "next/head";
+import Card from "react-bootstrap/Card";
+import { DebitType, UserType } from "types";
 
-const debitsStyle = {
-  paddingBottom: "20rem",
+type DebitProps = {
+  debits: DebitType[];
 };
-const Debits = () => (
-  <Layout>
-    <Head>
-      <title>MoveMoney | Debits History</title>
-    </Head>
-    <div style={debitsStyle}>
-    <h2 className="display-3">Debits History</h2>
-      <hr />
-      <br />
-    </div>
-  </Layout>
-);
+
+const Debits = ({ debits }: DebitProps) => {
+  if (debits.length < 1) return <>No debit record...</>;
+  return (
+    <>
+      {debits.map(({ _id, amount, createdAt, to }) => {
+        const { firstname, lastname, _id: id } = to as UserType
+        return (
+          <Card className="bg-dark mb-3" key={String(_id)}>
+            <Card.Header>Recipient: {firstname} {lastname} {id}</Card.Header>
+            <Card.Body>
+              <p>Amount sent: &#8358; {amount}</p>
+            </Card.Body>
+            <Card.Footer>
+              Recieved: {new Date(+createdAt!).toUTCString()}
+            </Card.Footer>
+          </Card>
+        );
+      })}
+    </>
+  );
+};
 
 export default Debits;

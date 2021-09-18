@@ -23,7 +23,7 @@ const schema = new Schema<LoanType>(
     maxLoanable: {
       type: Number,
       min: 0,
-      default: 10000,
+      default: process.env.MAX_LOAN,
     },
     monthlyInterestRate: { type: Number, min: 0, default: 0.3 },
     totalInterest: {

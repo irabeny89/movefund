@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { UserInputError, AuthenticationError } from "apollo-server-micro";
+import { ValidationError } from "apollo-server-micro";
 import { GraphContextType, TokenType, UserType } from "types";
 import { authUser, handleEncryption, handleError } from ".";
 
@@ -17,14 +17,14 @@ const registerUser = async (
 ): Promise<TokenType> => {
   // throw error if already existing
   handleError(
-    await UserModel.findOne({ email: rest.email }),
-    AuthenticationError,
-    "User with this email exist."
+    await UserModel.findOne({ email: rest.email }).exec(),
+    ValidationError,
+    "User with this email already exist."
   );
   // throw error if password length is not valid
   handleError(
     password.length < 6,
-    UserInputError,
+    ValidationError,
     "Password should be longer than 6 characters"
   );
   // create user document
@@ -33,10 +33,14 @@ const registerUser = async (
     ...(await handleEncryption(password)),
   });
   // create access and refresh tokens and set cookie
-  const token = authUser({ id: userDoc._id, isAdmin: userDoc?.isAdmin! }, res);
+  const tokenPair = authUser(
+    { id: userDoc._id, isAdmin: userDoc.isAdmin, name: userDoc.firstname },
+    res
+  );
   // create refresh token document
   const refreshTokenDoc = new RefreshTokenModel({
-    token: token.refreshToken,
+    token: tokenPair.refreshToken,
+    email: userDoc.email
   });
   // run query with transaction
   const session = await mongoose.startSession();
@@ -45,8 +49,8 @@ const registerUser = async (
     await refreshTokenDoc.save({ session });
   });
   session.endSession();
-  
-  return token;
+
+  return tokenPair;
 };
 
 export default registerUser;

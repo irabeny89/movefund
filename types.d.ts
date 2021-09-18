@@ -15,12 +15,14 @@ export type TokenType = {
 };
 
 export type RefreshTokenType = {
+  email: string;
   token: string;
 } & TimestampAndId;
 
 export type UserPayloadType = {
-  id: mongoose.Types.ObjectId;
-  isAdmin: boolean;
+  id?: mongoose.Types.ObjectId;
+  isAdmin?: boolean;
+  name?: string
 };
 
 export type GraphContextType = {
@@ -73,7 +75,7 @@ export type CreditType = {
 
 export type DebitType = {
   amount: number;
-  to: mongoose.Types.ObjectId;
+  to: mongoose.Types.ObjectId | UserType;
 } & TimestampAndId;
 
 export type WithdrawalType = {

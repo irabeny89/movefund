@@ -13,8 +13,8 @@ const schema = new Schema<UserType>(
     email: {
       type: String,
       trim: true,
-      unique: "Email already exists",
-      match: [/.+\@.+\..+/, "Please fill a valid email address"],
+      unique: true,
+      match: /.+\@.+\..+/,
       required: [true, "Email is required"],
       lowercase: true,
     },
@@ -22,12 +22,17 @@ const schema = new Schema<UserType>(
       type: String,
       required: true,
     },
-    salt: String,
+    salt: {
+      type: String,
+      required: true,
+    },
     phone: {
       type: String,
-      required: "Phone number is required",
+      required: [true, "Phone number is required"],
       trim: true,
       maxLength: 15,
+      minLength: 5,
+      match: /^\d+$/
     },
     currency: {
       type: String, enum: ["NGN", "USD"], default: "NGN"

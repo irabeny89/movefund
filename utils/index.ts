@@ -5,14 +5,31 @@ import { serialize, CookieSerializeOptions } from "cookie";
 import { NextApiResponse } from "next";
 import { TokenType, UserPayloadType } from "types";
 import { JwtPayload, Secret, sign, SignOptions, verify } from "jsonwebtoken";
+import config from "config";
 
-export const USER_POPULATION_OPTION = {
-  path: "credits debits loans withdrawals",
+const {
+  environmentVariable: {
+    jwtAccessSecret,
+    jwtRefreshSecret,
+    tokenIssuer,
+    nodeEnvironment,
+  },
+} = config;
+
+export const CREDITS_LOANS_WITHDRAWALS_POPULATION = {
+  path: "credits loans withdrawals"
+};
+
+export const DEBITS_POPULATION = {
+  path: "debits",
   populate: {
     path: "to",
   },
-};
+}
+
 export const AUTHORIZATION_ERROR_MESSAGE = "Authorization failed";
+
+export const LOGIN_ERROR_MESSAGE = "Enter correct email and password"
 
 export const setCookie = (
   res: NextApiResponse,
@@ -45,7 +62,7 @@ export const handleEncryption = async (
 };
 
 const asyncScrypt = promisify<BinaryLike, BinaryLike, number, Buffer>(scrypt);
-// used across
+
 export const handleError = (
   condition: any,
   ErrorClass: any,
@@ -81,9 +98,8 @@ export const getAccessToken = (authHeader: string | undefined): string | void =>
 
 export const verifyToken = (token: string, secret: Secret) => {
   try {
-    const decodedToken = verify(token, secret);
-
-    return decodedToken;
+    const decodedToken = verify(token, secret) as JwtPayload & UserPayloadType;
+    return decodedToken
   } catch (error) {
     handleError(error, AuthenticationError, AUTHORIZATION_ERROR_MESSAGE);
   }
@@ -101,41 +117,38 @@ const generateToken = (
   }
 };
 
-const getToken = ({ id, isAdmin }: UserPayloadType): TokenType => ({
-  accessToken: generateToken({ id, isAdmin }, process.env.JWT_ACCESS_SECRET!, {
+const getToken = ({ id, isAdmin, name }: UserPayloadType): TokenType => ({
+  accessToken: generateToken({ id, isAdmin, name }, jwtAccessSecret, {
     subject: `${id}`,
     expiresIn: "10m",
     audience: isAdmin ? "admin" : "user",
-    issuer: process.env.TOKEN_ISSUER || "http://localhost:3000/api/graphql",
+    issuer: tokenIssuer || "http://localhost:3000/api/graphql",
     algorithm: "HS256",
   })!,
-  refreshToken: generateToken(
-    { id, isAdmin },
-    process.env.JWT_REFRESH_SECRET!,
-    {
-      subject: `${id}`,
-      expiresIn: "30d",
-      audience: isAdmin ? "admin" : "user",
-      issuer: process.env.TOKEN_ISSUER || "http://localhost:3000/api/graphql",
-      algorithm: "HS256",
-    }
-  )!,
+  refreshToken: generateToken({ id, isAdmin }, jwtRefreshSecret, {
+    subject: `${id}`,
+    expiresIn: "30d",
+    audience: isAdmin ? "admin" : "user",
+    issuer: tokenIssuer || "http://localhost:3000/api/graphql",
+    algorithm: "HS256",
+  })!,
 });
 
 export const authUser = (
-  { id, isAdmin }: UserPayloadType,
+  { id, isAdmin, name }: UserPayloadType,
   res: NextApiResponse
 ) => {
   const _token = getToken({
     id,
     isAdmin,
+    name,
   });
 
   setCookie(res, "token", _token.refreshToken, {
     maxAge: 2592000000,
     httpOnly: true,
     sameSite: true,
-    secure: process.env.NODE_ENV == "production" ? true : false,
+    secure: nodeEnvironment == "production" ? true : false,
     path: "/api/graphql",
   });
 
@@ -148,7 +161,7 @@ export const handleAdminAuth = (
 ) => {
   const payload = verifyToken(
     getAccessToken(authHeader)!,
-    process.env.JWT_ACCESS_SECRET!
+    jwtAccessSecret
   ) as JwtPayload & UserPayloadType;
 
   isAdmin

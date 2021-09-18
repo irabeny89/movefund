@@ -1,7 +1,11 @@
 import { GraphContextType, LoanType, UserType } from "types";
 import mongoose, { ClientSession, Model } from "mongoose";
-import { handleAdminAuth, handleError, USER_POPULATION_OPTION } from ".";
-import { UserInputError } from "apollo-server-micro";
+import {
+  handleAdminAuth,
+  handleError,
+  CREDITS_LOANS_WITHDRAWALS_POPULATION,
+  DEBITS_POPULATION,
+} from ".";
 
 const loanRequestTransaction = async (
   session: ClientSession,
@@ -50,20 +54,26 @@ const requestLoan = async (
   const userLoans = (
     await UserModel.findById(userId)
       .select("loans")
-      .populate(USER_POPULATION_OPTION)
+      .populate(CREDITS_LOANS_WITHDRAWALS_POPULATION)
+      .populate(DEBITS_POPULATION)
       .exec()
   )?.loans as LoanType[];
-  // check if user is on loaned
+  // check if user is on loan
   const isLoanedBefore = userLoans.length > 0;
   // get last loan record
   const lastLoan = userLoans[userLoans.length - 1];
-  // if user has loaned before throw error
-  isLoanedBefore &&
-    handleError(
-      !lastLoan.isPaid,
-      Error,
-      "Your loan is still pending or you are still owing. Please, pay back your loan or wait for a reply. "
-    );
+  // if user loaned before and last loan status is pending
+  handleError(
+    isLoanedBefore && lastLoan.status === "PENDING",
+    Error,
+    "Your loan is still pending. Please wait for a  some time."
+  );
+
+  handleError(
+    isLoanedBefore && lastLoan.status === "APPROVED" && !lastLoan.isPaid,
+    Error,
+    `Kindly pay back your last approved loan with interest.`
+  );
   // create loan document
   const loan = new LoanModel({ amount });
   // run query with transaction

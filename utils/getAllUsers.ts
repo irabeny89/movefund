@@ -1,6 +1,9 @@
-import mongoose from "mongoose";
 import { GraphContextType, UserType } from "types";
-import { handleAdminAuth, USER_POPULATION_OPTION } from ".";
+import {
+  handleAdminAuth,
+  CREDITS_LOANS_WITHDRAWALS_POPULATION,
+  DEBITS_POPULATION,
+} from ".";
 
 const getAllUsers = async (
   _: any,
@@ -15,8 +18,9 @@ const getAllUsers = async (
   // handle admin auth and error
   handleAdminAuth(authorization!);
   // return all users array
-  const users = await UserModel.find({})
-    .populate(USER_POPULATION_OPTION)
+  const users = await UserModel.find({}, {})
+    .populate(CREDITS_LOANS_WITHDRAWALS_POPULATION)
+    .populate(DEBITS_POPULATION)
     .exec();
 
   return users;

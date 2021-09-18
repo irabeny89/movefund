@@ -1,7 +1,12 @@
 import { UserInputError } from "apollo-server-core";
 import mongoose from "mongoose";
 import { GraphContextType, LoanType } from "types";
-import { handleAdminAuth, handleError, USER_POPULATION_OPTION } from ".";
+import {
+  handleAdminAuth,
+  handleError,
+  CREDITS_LOANS_WITHDRAWALS_POPULATION,
+  DEBITS_POPULATION,
+} from ".";
 
 const paybackLoan = async (
   _: any,
@@ -19,32 +24,29 @@ const paybackLoan = async (
     LoanModel,
   }: GraphContextType
 ): Promise<string> => {
-  // only authorized user
+  // only authorized user, admin cannot use loan service
   const { id } = handleAdminAuth(authorization!, false);
   // get user loans record
   const { balance, loans: userLoans } = (await UserModel.findById(id)
     .select("loans balance")
-    .populate(USER_POPULATION_OPTION)
+    .populate(CREDITS_LOANS_WITHDRAWALS_POPULATION)
+    .populate(DEBITS_POPULATION)
     .exec()) as { balance: number; loans: LoanType[] };
   // user last loan record
-  const { _id, amountDue, status, isPaid } = userLoans![userLoans!.length - 1];
+  const { _id, amountDue } = userLoans![userLoans!.length - 1];
+  // throw error if not owing
+  handleError(amountDue! < 0, Error, "You are not owing.");
   // throw error if user balance is low
   handleError(
-    amount < balance,
+    amount > balance,
     UserInputError,
-    "You do not have enough balance. Transfer using payment gateway."
+    `You do not have enough balance. Your balance: ${balance}. Transfer using payment gateway or request from someone.`
   );
   // throw error if amount is less than amount due
   handleError(
     amount < amountDue!,
     UserInputError,
-    `Please pay back the amount due: ${amountDue}`
-  );
-  // throw error if user is not owing
-  handleError(
-    isPaid || status !== "APPROVED",
-    Error,
-    "You are not owing. Your loan may have not been approved yet."
+    `Please pay the amount due: ${amountDue}`
   );
   // throw error if payback method is PAYMENT_GATEWAY- coming soon
   handleError(

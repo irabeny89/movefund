@@ -1,6 +1,6 @@
 const Footer = () => (
   <footer className="bg-secondary text-center text-white py-2">
-    Made by Ernest Irabor
+    Ernest Irabor | MoveMoney&trade; | &copy;2021
   </footer>
 );
 

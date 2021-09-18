@@ -1,6 +1,11 @@
 import { GraphContextType, LoanType } from "types";
 import mongoose from "mongoose";
-import { handleAdminAuth, handleError, USER_POPULATION_OPTION } from ".";
+import {
+  handleAdminAuth,
+  handleError,
+  CREDITS_LOANS_WITHDRAWALS_POPULATION,
+  DEBITS_POPULATION,
+} from ".";
 import { UserInputError } from "apollo-server-core";
 
 const replyLoanRequest = async (
@@ -28,7 +33,10 @@ const replyLoanRequest = async (
     ?.balance as number;
   // get user loans record
   const userLoans = (
-    await UserModel.findById(userId).populate(USER_POPULATION_OPTION).exec()
+    await UserModel.findById(userId)
+      .populate(CREDITS_LOANS_WITHDRAWALS_POPULATION)
+      .populate(DEBITS_POPULATION)
+      .exec()
   )?.loans as LoanType[];
   // if user not found throw error
   handleError(!userLoans, UserInputError, "User not found.");

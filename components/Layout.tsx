@@ -1,6 +1,18 @@
-import { ReactNode } from "react";
+import { CSSProperties, ReactNode } from "react";
+import ClientOnly from "./ClientOnly";
 import Footer from "./Footer";
 import Header from "./Header";
+
+const layoutStyle: CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  minHeight: "100vh",
+  backgroundColor: "#262a41",
+  padding: "2rem 0 30rem",
+  color: "white",
+};
 
 interface LayoutProps {
   children: ReactNode;
@@ -8,21 +20,10 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => (
   <>
-    <Header />
-    <main
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        backgroundColor: "#262a41",
-        padding: "2rem 0",
-        color: "white"
-      }}
-    >
-      {children}
-    </main>
+    <ClientOnly>
+      <Header />
+    </ClientOnly>
+    <main style={layoutStyle}>{children}</main>
     <Footer />
   </>
 );

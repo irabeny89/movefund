@@ -1,23 +1,32 @@
 import Container from "react-bootstrap/Container";
 import Spinner from "react-bootstrap/Spinner";
+import Alert from "react-bootstrap/Alert";
+import config from "config"
 
 type AjaxFeedbackProps = {
-  isLoading: boolean;
-  error: unknown;
+  isLoading?: boolean;
+  error?: any;
+  spinnerMessage?: string;
 };
 
-const AjaxFeedback = ({ isLoading, error }: AjaxFeedbackProps) => (
+const { appData: { title } } = config
+
+const AjaxFeedback = ({
+  isLoading,
+  error,
+  spinnerMessage = title,
+}: AjaxFeedbackProps) => (
   <Container className="text-center">
     {isLoading && (
-      <Container className="text-info">
-        <Spinner size="sm" animation="grow" /> Loading...
-      </Container>
+      <Spinner animation="border" role="status">
+        {spinnerMessage}
+      </Spinner>
     )}
     {error && (
-      <Container className="text-danger">
-        Could not fetch data! Check your internet connection then reload the
-        page.
-      </Container>
+      <Alert variant="danger">
+        <Alert.Heading>Error</Alert.Heading><hr />
+        <p>{error.message}</p>
+      </Alert>
     )}
   </Container>
 );

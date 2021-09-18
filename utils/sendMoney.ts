@@ -23,10 +23,14 @@ const sendMoney = async (
   // admin cannot send
   const { id } = handleAdminAuth(authorization!, false);
   // get user properties
-  const { balance, firstname, lastname } = (await UserModel.findById(id)
+  const userFewData = (await UserModel.findById(id)
     .select("balance firstname lastname")
-    .exec()) as UserType;
-  // throw error if user balance is low
+    .exec()) as (Pick<UserType, "balance" | "firstname" | "lastname">) | null;
+  // throw error if user not found
+  handleError(!userFewData, Error, "User not found")
+  // destructure
+  const { balance, firstname, lastname } = userFewData!
+  // throw error if user balance is low or undefined
   handleError(balance! < amount, Error, "Insufficient fund.");
   // create debit document for sender
   const debit = new DebitModel({

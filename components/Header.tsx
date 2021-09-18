@@ -1,64 +1,95 @@
-import { Badge, Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import Badge from "react-bootstrap/Badge";
+import Container from "react-bootstrap/Container";
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import NavDropdown from "react-bootstrap/NavDropdown";
 import Link from "next/link";
+import { useMutation, gql } from "@apollo/client";
+import { accessTokenVar } from "@/graphql/reactiveVariables";
+import AuthScope from "./AuthScope";
+import { usePayload } from "hooks";
+import config from "config";
+import AjaxFeedback from "./AjaxFeedback";
+
+// get app data from config
+const { title, pageTitles } = config.appData;
 
 const brandStyle = {
   cursor: "pointer",
 };
-const Header = () => (
-  <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-    <Container>
-      <Link href="/">
-        <Navbar.Brand style={brandStyle}>MoveMoney</Navbar.Brand>
-      </Link>
-      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-      <Navbar.Collapse id="responsive-navbar-nav">
-        <Nav className="me-auto">
-          <NavDropdown title="Member" id="collapsible-nav-dropdown">
-            <Link passHref href="/member/register">
-              <NavDropdown.Item>Register</NavDropdown.Item>
-            </Link>
-            <NavDropdown.Divider />
-            <Link passHref href="/member/login">
-              <NavDropdown.Item>Login</NavDropdown.Item>
-            </Link>
-            <NavDropdown.Item>Logout</NavDropdown.Item>
-          </NavDropdown>
-          <NavDropdown title="Fund Account" id="collapsible-nav-dropdown">
-            <Link passHref href="/fundAccount/requestLoan">
-              <NavDropdown.Item>Request Loan</NavDropdown.Item>
-            </Link>
-            <NavDropdown.Divider />
-            <NavDropdown.Item href="#bankTransfer">
-              Bank Transfer - <Badge className="bg-info">coming soon</Badge>
-            </NavDropdown.Item>
-          </NavDropdown>
-          <Nav.Link href="#withdraw">
-            Withdraw - <Badge className="bg-info">coming soon</Badge>
-          </Nav.Link>
-          <NavDropdown title="Transactions" id="collapsible-nav-dropdown">
-            <Link passHref href="/transactions/loans">
-              <NavDropdown.Item>Loans</NavDropdown.Item>
-            </Link>
-            <Link passHref href="/transactions/credits">
-              <NavDropdown.Item>Credits</NavDropdown.Item>
-            </Link>
-            <Link passHref href="/transactions/debits">
-              <NavDropdown.Item>Debits</NavDropdown.Item>
-            </Link>
-            <Link passHref href="/transactions/withdraws">
-              <NavDropdown.Item>Withdraws</NavDropdown.Item>
-            </Link>
-          </NavDropdown>
-          <Link passHref href="/users">
-            <Nav.Link>All Users</Nav.Link>
-          </Link>
-          <Link passHref href="/loanRequests">
-            <Nav.Link>Loan Requests</Nav.Link>
-          </Link>
-        </Nav>
-      </Navbar.Collapse>
-    </Container>
-  </Navbar>
-);
+
+const Header = () => {
+  // get token payload
+  const payload = usePayload();
+  // create logout mutation
+  const [logoutUser, { loading, error }] = useMutation(gql`
+    mutation Logout {
+      logout
+    }
+  `);
+  // logout handler
+  const handleLogout = async () => {
+    // execute logout mutation
+    await logoutUser();
+    // clear tokens
+    accessTokenVar(undefined);
+    // redirect to home and refresh to clear cache
+    location.href = "/";
+  };
+
+  return payload ? (
+    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+      <Container>
+        <Link href="/">
+          <Navbar.Brand style={brandStyle}>{title}&trade;</Navbar.Brand>
+        </Link>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="me-auto">
+            <NavDropdown
+              title={payload?.name || "Member"}
+              id="collapsible-nav-dropdown"
+            >
+              <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+            </NavDropdown>
+            <AuthScope>
+              <Link passHref href="/me">
+                <Nav.Link>{pageTitles[1]}</Nav.Link>
+              </Link>
+            </AuthScope>
+            <AuthScope>
+              <Link passHref href="/me/fundAccount">
+                <Nav.Link>{pageTitles[2]}</Nav.Link>
+              </Link>
+            </AuthScope>
+            <AuthScope scope="user">
+              <Link passHref href="/me/sendMoney">
+                <Nav.Link>{pageTitles[3]}</Nav.Link>
+              </Link>
+            </AuthScope>
+            <AuthScope scope="user">
+              <Link passHref href="/me/paybackLoan">
+                <Nav.Link>{pageTitles[4]}</Nav.Link>
+              </Link>
+            </AuthScope>
+            <AuthScope>
+              <Link passHref href="#withdraw">
+                <Nav.Link>
+                  Withdraw - <Badge className="bg-info">coming soon</Badge>
+                </Nav.Link>
+              </Link>
+            </AuthScope>
+            <AuthScope scope="admin">
+              <Link passHref href="/me/users">
+                <Nav.Link>{pageTitles[5]}</Nav.Link>
+              </Link>
+            </AuthScope>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+      <AjaxFeedback error={error} isLoading={loading} />
+    </Navbar>
+  ) : null;
+};
 
 export default Header;

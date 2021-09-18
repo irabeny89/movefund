@@ -1,7 +1,8 @@
-import mongoose from "mongoose"
-import { AuthenticationError } from "apollo-server-micro";
+import { UserInputError } from "apollo-server-micro";
 import { UserType, GraphContextType, TokenType } from "types";
-import { authUser, comparePassword, handleError } from ".";
+import { authUser, comparePassword, handleError, LOGIN_ERROR_MESSAGE } from ".";
+
+
 
 const login = async (
   _: any,
@@ -11,18 +12,21 @@ const login = async (
   // find user
   const user = await UserModel.findOne({ email }).exec();
   // throw error if user doesn't exist
-  handleError(!user, AuthenticationError, "Authentication error");
+  handleError(!user, UserInputError, LOGIN_ERROR_MESSAGE);
   // compare passwords and handle error
   await comparePassword(user?.password!, loginPassword, user?.salt!);
   // authorize and authenticate
-  const token = authUser({ id: user?._id, isAdmin: user?.isAdmin! }, res);
+  const token = authUser(
+    { id: user?._id, isAdmin: user?.isAdmin!, name: user?.firstname },
+    res
+  );
   // find and update or create refresh token
   await RefreshTokenModel.findOneAndUpdate(
     {
       email,
     },
     {
-      token: token.refreshToken,
+      token: token.refreshToken, email
     },
     {
       upsert: true,

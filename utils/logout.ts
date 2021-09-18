@@ -1,4 +1,3 @@
-import mongoose from "mongoose"
 import { GraphContextType } from "types";
 import { setCookie } from ".";
 

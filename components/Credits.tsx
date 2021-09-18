@@ -1,20 +1,28 @@
-import Layout from "@/components/Layout";
-import Head from "next/head";
+import Card from "react-bootstrap/Card";
+import { CreditType } from "types";
 
-const creditsStyle = {
-  paddingBottom: "20rem",
+type CreditsProps = {
+  credits: CreditType[];
 };
-const Credits = () => (
-  <Layout>
-    <Head>
-      <title>MoveMoney | Credits History</title>
-    </Head>
-    <div style={creditsStyle}>
-    <h2 className="display-3">Credits History</h2>
-      <hr />
-      <br />
-    </div>
-  </Layout>
-);
+
+const Credits = ({ credits }: CreditsProps) => {
+  if (credits.length < 1) return <>No credit record...</>;
+  return (
+    <>
+      {credits.map(({ amount, from, method, _id, createdAt }) => (
+        <Card className="bg-dark mb-3" key={String(_id)}>
+          <Card.Header>&#8358; {amount}</Card.Header>
+          <Card.Body>
+            <p>Sender: {from}</p>
+            <p>Transfer Method: {method}</p>
+          </Card.Body>
+          <Card.Footer>
+            Recieved: {new Date(+createdAt!).toUTCString()}
+          </Card.Footer>
+        </Card>
+      ))}
+    </>
+  );
+};
 
 export default Credits;

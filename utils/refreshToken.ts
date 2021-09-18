@@ -1,8 +1,13 @@
-import mongoose from "mongoose"
+import { AuthenticationError } from "apollo-server-micro";
 import { JwtPayload } from "jsonwebtoken";
 import { GraphContextType, TokenType, UserPayloadType } from "types";
-import { authUser, verifyToken } from ".";
+import { AUTHORIZATION_ERROR_MESSAGE, authUser, handleError, verifyToken } from ".";
+import config from "config";
 
+// get environment variable from app config file
+const {
+  environmentVariable: { jwtRefreshSecret },
+} = config;
 const refreshToken = async (
   _: any,
   __: any,
@@ -13,18 +18,23 @@ const refreshToken = async (
     },
     res,
   }: GraphContextType
-): Promise<TokenType> => {
-  // verify token authenticity and handle error
-  const { id, isAdmin } = verifyToken(token, process.env.JWT_REFRESH_SECRET!) as JwtPayload & UserPayloadType
+): Promise<TokenType | void> => {
+  // verify token authenticity, retrieve needed payload and handle error
+  const { id, isAdmin, name } = verifyToken(
+    token,
+    jwtRefreshSecret
+  ) as JwtPayload & UserPayloadType;
   // re-authenticate/authorize
-  const _token = authUser({ id, isAdmin }, res)
+  const _token = authUser({ id, isAdmin, name }, res);
   // overwrite token document
-  await RefreshTokenModel.findOneAndReplace({
-    token
-  }, { token: _token.refreshToken })
-
-  // return new token
-  return _token
+  const refresh = await RefreshTokenModel.findOneAndReplace(
+    {
+      token,
+    },
+    { token: _token.refreshToken }
+  ).exec();
+  // return new token if refreshed ok or throw error
+  return refresh ? _token : handleError(!refresh, AuthenticationError, AUTHORIZATION_ERROR_MESSAGE)
 };
 
-export default refreshToken
+export default refreshToken;

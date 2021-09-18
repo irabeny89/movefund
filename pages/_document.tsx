@@ -1,4 +1,5 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
+import config from "config";
 
 class MyDocument extends Document {
   render() {
@@ -7,7 +8,7 @@ class MyDocument extends Document {
         <Head>
           <meta
             name="description"
-            content="Send and receive money or loan using this web app"
+            content={config.appData.description}
           />
         </Head>
         <body>
