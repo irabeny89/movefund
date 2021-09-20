@@ -7,7 +7,7 @@ const handler = async (req: MicroRequest, res: NextApiResponse) => {
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader(
     "Access-Control-Allow-Origin",
-    "https://studio.apollographql.com"
+    "https://movefund.vercel.app"
   );
   res.setHeader(
     "Access-Control-Allow-Headers",
