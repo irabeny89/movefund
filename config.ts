@@ -28,7 +28,7 @@ const config = {
     tokenIssuer: "https://movefund.vercel.app",
     nodeEnvironment: process.env.NODE_ENV,
     maxLoan: 10000,
-    monthlyInterestRate: 0.10,
+    monthlyInterestRate: 0.1,
     dbUrl:
       process.env.NODE_ENV == "production"
         ? process.env.DB_URL_ATLAS!
