@@ -14,7 +14,7 @@ const login = async (
   // compare passwords and handle error
   await comparePassword(user?.password!, loginPassword, user?.salt!);
   // authorize and authenticate
-  const token = authUser({ id: user?._id, isAdmin: user?.isAdmin! }, res);
+  const token = authUser({ id: user?._id, isAdmin: user?.isAdmin!, firstname: user?.firstname! }, res);
   // find and update or create refresh token
   await RefreshTokenModel.findOneAndUpdate(
     {

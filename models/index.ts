@@ -16,7 +16,7 @@ const dbConnection = async () => {
 };
 
 mongoose.connection.once("open", () =>
-  console.log("Database connected: %s", process.env.DB_URL)
+  console.log("Database connected: %s", dbUrl)
 );
 
 export default dbConnection;

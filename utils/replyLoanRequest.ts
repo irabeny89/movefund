@@ -27,9 +27,9 @@ const replyLoanRequest = async (
   }: GraphContextType
 ): Promise<string> => {
   // only admin has permission
-  const { id } = handleAdminAuth(authorization!);
+  const { sub } = handleAdminAuth(authorization!);
   // get admin balance
-  const adminBalance = (await UserModel.findById(id).select("balance").exec())
+  const adminBalance = (await UserModel.findById(sub).select("balance").exec())
     ?.balance as number;
   // get user loans record
   const userLoans = (
@@ -80,7 +80,7 @@ const replyLoanRequest = async (
       );
       // update admin balance and add debit record
       await UserModel.findByIdAndUpdate(
-        id,
+        sub,
         {
           $inc: { balance: -userLastLoan.amount },
           $push: { debits: debitId },

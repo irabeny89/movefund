@@ -1,6 +1,7 @@
 {
-  "name": "next-ts-movemoney",
-  "version": "0.1.0",
+  "name": "next-ts-movefund",
+  "description": "A simple web application to move fund from one place to another.",
+  "version": "1.0.0",
   "private": true,
   "engines": {
     "node": "^14.17.3",

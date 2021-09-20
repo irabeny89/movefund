@@ -7,21 +7,14 @@ import Layout from "@/components/Layout";
 import PaybackLoan from "@/components/PaybackLoan";
 import SendMoney from "@/components/SendMoney";
 import Users from "@/components/Users";
-import { usePayload } from "hooks";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import Head from "next/head";
 import config from "config";
 
 const { title, pageTitles } = config.appData;
 
 const Me = () => {
-  const { query, replace } = useRouter();
-  const { jwtPayload } = usePayload();
-
-  useEffect(() => {
-    if (!jwtPayload?.id) replace("/");
-  });
+  const { query } = useRouter();
 
   // route /me
   if (!query.slug)

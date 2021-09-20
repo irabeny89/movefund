@@ -20,7 +20,7 @@ const brandStyle = {
 
 const Header = () => {
   // get token payload
-  const { currentUser, jwtPayload } = usePayload();
+  const { jwtPayload } = usePayload();
   // create logout mutation
   const [logoutUser, { loading, error }] = useMutation(gql`
     mutation Logout {
@@ -46,7 +46,7 @@ const Header = () => {
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
             <NavDropdown
-              title={currentUser.firstname || "Member"}
+              title={jwtPayload.firstname || "Member"}
               id="collapsible-nav-dropdown"
             >
               <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>

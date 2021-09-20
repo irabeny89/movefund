@@ -25,9 +25,9 @@ const paybackLoan = async (
   }: GraphContextType
 ): Promise<string> => {
   // only authorized user, admin cannot use loan service
-  const { id } = handleAdminAuth(authorization!, false);
+  const { sub } = handleAdminAuth(authorization!, false);
   // get user loans record
-  const { balance, loans: userLoans } = (await UserModel.findById(id)
+  const { balance, loans: userLoans } = (await UserModel.findById(sub)
     .select("loans balance")
     .populate(CREDITS_LOANS_WITHDRAWALS_POPULATION)
     .populate(DEBITS_POPULATION)
@@ -61,7 +61,7 @@ const paybackLoan = async (
   // debit user to credit admin
   const userDebit = new DebitModel({ amount, to: admin?._id });
   // credit admin
-  const adminCredit = new CreditModel({ amount, from: id, method });
+  const adminCredit = new CreditModel({ amount, from: sub, method });
   // start query transaction
   const session = await mongoose.startSession();
   await session.withTransaction(async () => {
@@ -71,7 +71,7 @@ const paybackLoan = async (
     await adminCredit.save({ session });
     // append user debit record and reduce balance
     await UserModel.findByIdAndUpdate(
-      id,
+      sub,
       {
         $inc: { balance: -amount },
         $push: { debits: userDebit._id },

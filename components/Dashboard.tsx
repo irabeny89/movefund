@@ -4,7 +4,6 @@ import AjaxFeedback from "@/components/AjaxFeedback";
 import { LoanType, UserType } from "types";
 import {
   accessTokenVar,
-  currentUserVar,
   myLastLoanAmountDueVar,
 } from "@/graphql/reactiveVariables";
 import { GET_MY_PROFILE_QUERY } from "@/graphql/documentNodes";
@@ -24,7 +23,7 @@ const Dashboard = () => {
         authorization: accessToken ? `Bearer ${accessToken}` : "",
       },
     },
-    pollInterval: 5000,
+    // pollInterval: 5000,
   });
 
   if (data) {
@@ -32,8 +31,7 @@ const Dashboard = () => {
       data?.getMyProfile?.loans?.length! - 1
     ] as LoanType;
     // set last amount due in reactive variable
-    myLastLoanAmountDueVar(lastLoan?.amountDue! || 0);
-    currentUserVar({firstname: data.getMyProfile.firstname})
+    myLastLoanAmountDueVar(lastLoan?.amountDue!);
   }
 
   return (

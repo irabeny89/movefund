@@ -10,7 +10,7 @@ import AjaxFeedback from "@/components/AjaxFeedback";
 import { usePayload } from "hooks";
 import config from "config";
 // max amount loanable
-const { maxLoan } = config.environmentVariable;
+const { maxLoan, monthlyInterestRate } = config.environmentVariable;
 
 const badgeStyle = { fontSize: "0.9rem" };
 
@@ -29,6 +29,7 @@ const RequestLoanForm = () => {
         authorization: accessToken ? `Bearer ${accessToken}` : "",
       },
     },
+    refetchQueries: ["GetMyProfile"],
   });
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -48,7 +49,7 @@ const RequestLoanForm = () => {
 
     // execute mutation with variables
     sendRequest({
-      variables: { userId: String(jwtPayload?.id), amount: +amount! },
+      variables: { userId: jwtPayload?.sub, amount: +amount! },
     });
   };
 
@@ -94,7 +95,7 @@ const RequestLoanForm = () => {
           <li>
             Interest rate:{" "}
             <Badge className="bg-primary" style={badgeStyle}>
-              3 %
+              {monthlyInterestRate} %
             </Badge>{" "}
             every month.
           </li>

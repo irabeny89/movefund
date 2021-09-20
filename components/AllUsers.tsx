@@ -5,7 +5,7 @@ type AllUsersProps = {
   usersData: UserType[];
 };
 
-const AllUsers = ({ usersData }: AllUsersProps) => {
+const AllUsers = ({ usersData = [] }: AllUsersProps) => {
   return (
     <div>
       {usersData.map((user) => (

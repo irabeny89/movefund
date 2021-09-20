@@ -119,15 +119,19 @@ const generateToken = (
   }
 };
 
-const getToken = ({ id, isAdmin }: UserPayloadType): TokenType => ({
-  accessToken: generateToken({ id, isAdmin }, jwtAccessSecret, {
+const getToken = ({
+  id,
+  isAdmin,
+  firstname,
+}: UserPayloadType & { id: string; isAdmin: boolean }): TokenType => ({
+  accessToken: generateToken({ firstname }, jwtAccessSecret, {
     subject: `${id}`,
     expiresIn: "10m",
     audience: isAdmin ? "admin" : "user",
     issuer: tokenIssuer || "http://localhost:3000/api/graphql",
     algorithm: "HS256",
   })!,
-  refreshToken: generateToken({ id, isAdmin }, jwtRefreshSecret, {
+  refreshToken: generateToken({ firstname }, jwtRefreshSecret, {
     subject: `${id}`,
     expiresIn: "30d",
     audience: isAdmin ? "admin" : "user",
@@ -137,12 +141,17 @@ const getToken = ({ id, isAdmin }: UserPayloadType): TokenType => ({
 });
 
 export const authUser = (
-  { id, isAdmin }: UserPayloadType,
+  {
+    id,
+    isAdmin,
+    firstname,
+  }: UserPayloadType & { id: string; isAdmin: boolean },
   res: NextApiResponse
 ) => {
   const _token = getToken({
     id,
     isAdmin,
+    firstname,
   });
 
   setCookie(res, "token", _token.refreshToken, {
@@ -167,12 +176,12 @@ export const handleAdminAuth = (
 
   isAdmin
     ? handleError(
-        !payload.isAdmin,
+        payload.aud !== "admin",
         AuthenticationError,
         AUTHORIZATION_ERROR_MESSAGE
       )
     : handleError(
-        payload.isAdmin,
+        payload.aud == "admin",
         AuthenticationError,
         AUTHORIZATION_ERROR_MESSAGE
       );

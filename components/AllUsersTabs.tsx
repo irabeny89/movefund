@@ -20,12 +20,11 @@ const AllUsersTabs = () => {
     },
     pollInterval: 5000,
   });
-console.log(accessToken, "test access token");
 
   if (loading) return <AjaxFeedback isLoading={loading} />;
 
   // get all users pending loans
-  const getPendingLoans = (usersData: UserType[]) => {
+  const getPendingLoans = (usersData: UserType[] = []) => {
     const usersPendingLoanRequest = usersData.map((user) => {
       // get a user loans list
       const loans = user.loans! as LoanType[];

@@ -3,30 +3,39 @@ import { onError } from "@apollo/client/link/error";
 import { RetryLink } from "@apollo/client/link/retry";
 import { accessTokenVar } from "@/graphql/reactiveVariables";
 import axios from "axios";
+import config from "config";
 
-const url = "/api/graphql";
+const { graphqlUri } = config.environmentVariable;
+
 const query = `{
   refreshToken {
     accessToken
   }
 }
 `;
-axios({
-  method: "post",
-  data: { query },
-  url,
-})
-  .then(
-    ({ data }) => {
-      console.log(data);
 
-      // accessTokenVar(accessToken);
-    }
-  )
-  .catch((err) => console.error(err));
+console.log("=== refreshing token ===");
+
+(async () => {
+  try {
+    const {
+      data: { data },
+    } = await axios({
+      method: "post",
+      data: { query },
+      url: graphqlUri,
+    });
+    console.log("=== refreshed ===");
+    // update token state variable
+    accessTokenVar(data?.refreshToken?.accessToken);
+  } catch (error) {
+    console.error(error);
+    console.log("xxx failed to refresh xxx");
+  }
+})();
 
 const httpLink = new HttpLink({
-  uri: "http://localhost:3000/api/graphql",
+  uri: graphqlUri,
   headers: {
     authorization: accessTokenVar() ? `Bearer ${accessTokenVar()}` : "",
   },

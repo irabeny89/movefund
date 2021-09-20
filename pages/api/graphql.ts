@@ -1,6 +1,9 @@
 import { MicroRequest } from "apollo-server-micro/dist/types";
 import { NextApiResponse } from "next";
 import apolloServer from "../../graphql";
+import appConfig from "config";
+
+const { tokenIssuer } = appConfig.environmentVariable;
 
 const server = apolloServer.start();
 const handler = async (req: MicroRequest, res: NextApiResponse) => {
@@ -9,6 +12,7 @@ const handler = async (req: MicroRequest, res: NextApiResponse) => {
     "Access-Control-Allow-Origin",
     "https://studio.apollographql.com"
   );
+  // res.setHeader("Access-Control-Allow-Origin", tokenIssuer);
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"

@@ -6,7 +6,6 @@ import Credits from "@/components/Credits";
 import Debits from "@/components/Debits";
 import Loans from "@/components/Loans";
 import Withdraws from "./Withdraws";
-import { usePayload } from "hooks";
 
 type DashboardProps = { userData: UserType };
 
@@ -25,7 +24,6 @@ const DashboardTabs = ({
     _id,
   },
 }: DashboardProps) => {
-  const { jwtPayload } = usePayload()
   return (
     <Tabs defaultActiveKey="overview" id="uncontrolled-tab" className="mb-3">
       <Tab tabClassName="text-info" eventKey="overview" title="Overview">
@@ -48,11 +46,9 @@ const DashboardTabs = ({
       <Tab tabClassName="text-info" eventKey="debits" title="Debits">
         <Debits debits={debits as unknown as DebitType[]} />
       </Tab>
-      {jwtPayload?.aud !== "admin" && (
-        <Tab tabClassName="text-info" eventKey="loans" title="Loans">
-          <Loans loans={loans as unknown as LoanType[]} />
-        </Tab>
-      )}
+      <Tab tabClassName="text-info" eventKey="loans" title="Loans">
+        <Loans loans={loans as unknown as LoanType[]} />
+      </Tab>
       <Tab tabClassName="text-info" eventKey="withdraws" title="Withdraws">
         {/* coming soon */}
         <Withdraws />

@@ -21,6 +21,7 @@ const AppTransferForm = () => {
         authorization: accessToken ? `Bearer ${accessToken}` : "",
       },
     },
+    refetchQueries: ["GetMyProfile"],
   });
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {

@@ -1,6 +1,6 @@
 import { AuthenticationError } from "apollo-server-micro";
 import { JwtPayload } from "jsonwebtoken";
-import { GraphContextType, UserPayloadType, UserType } from "types";
+import { GraphContextType, UserType } from "types";
 import {
   getAccessToken,
   handleError,
@@ -25,18 +25,18 @@ const getMyProfile = async (
     environmentVariable: { jwtAccessSecret },
   } = config;
   // get user id from payload
-  const { id } = verifyToken(
+  const { sub } = verifyToken(
     getAccessToken(authorization)!,
     jwtAccessSecret
-  ) as JwtPayload & UserPayloadType;
+  ) as JwtPayload & { firstname: string };
   // throw error if not authorized
   handleError(
-    !id,
+    !sub,
     AuthenticationError,
     "You are forbidden, login to continue."
   );
   // get user document
-  const user = (await UserModel.findById(id!)
+  const user = (await UserModel.findById(sub!)
     .populate(CREDITS_LOANS_WITHDRAWALS_POPULATION)
     .populate(DEBITS_POPULATION)
     .exec()) as UserType;

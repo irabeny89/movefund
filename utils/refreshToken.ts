@@ -1,6 +1,6 @@
 import { AuthenticationError } from "apollo-server-micro";
 import { JwtPayload } from "jsonwebtoken";
-import { GraphContextType, TokenType, UserPayloadType } from "types";
+import { GraphContextType, TokenType } from "types";
 import {
   AUTHORIZATION_ERROR_MESSAGE,
   authUser,
@@ -25,12 +25,15 @@ const refreshToken = async (
   }: GraphContextType
 ): Promise<TokenType | void> => {
   // verify token authenticity, retrieve needed payload and handle error
-  const { id, isAdmin } = verifyToken(
+  const { firstname, sub, aud } = verifyToken(
     token,
     jwtRefreshSecret
-  ) as JwtPayload & UserPayloadType;
+  ) as JwtPayload & { firstname: string };
   // re-authenticate/authorize
-  const _token = authUser({ id, isAdmin }, res);
+  const _token = authUser(
+    { id: sub!, isAdmin: aud! == "admin" ? true : false, firstname },
+    res
+  );
   // overwrite token document
   const refresh = await RefreshTokenModel.findOneAndUpdate(
     {

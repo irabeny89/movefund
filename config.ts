@@ -11,7 +11,7 @@ const config = {
     ],
     testAccount: {
       email: "movefund@gmail.com",
-      password: "testmove"
+      password: "testmove",
     },
     pageTitles: [
       "Home",
@@ -19,17 +19,29 @@ const config = {
       "Fund Account",
       "Send Money",
       "Payback Loan",
-      "Users"
-    ]
+      "Users",
+    ],
   },
   environmentVariable: {
     jwtAccessSecret: process.env.JWT_ACCESS_SECRET!,
     jwtRefreshSecret: process.env.JWT_REFRESH_SECRET!,
-    tokenIssuer: process.env.TOKEN_ISSUER!,
+    tokenIssuer: "https://movefund.vercel.app",
     nodeEnvironment: process.env.NODE_ENV,
-    maxLoan: process.env.NEXT_PUBLIC_MAX_LOAN,
-    dbUrl: process.env.DB_URL!
-  }
+    maxLoan: 10000,
+    monthlyInterestRate: 0.10,
+    dbUrl:
+      process.env.NODE_ENV == "production"
+        ? process.env.DB_URL_ATLAS!
+        : process.env.DB_URL_COMPASS!,
+    host:
+      process.env.NODE_ENV == "production"
+        ? "https://movefund.vercel.app"
+        : "http://localhost:3000",
+    graphqlUri:
+      process.env.NODE_ENV == "production"
+        ? "https://movefund.vercel.app/api/graphql"
+        : "http://localhost:3000/api/graphql",
+  },
 };
 
 export default config;

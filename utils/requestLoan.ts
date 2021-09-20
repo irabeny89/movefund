@@ -30,9 +30,8 @@ const loanRequestTransaction = async (
         },
         { session }
       ).exec();
-    } catch (error) {
-      console.error(error);
-      handleError(error, Error, "Oops! Something went wrong. Try again.");
+    } catch (error: any) {
+      handleError(error, Error, error._message);
     }
   });
 };

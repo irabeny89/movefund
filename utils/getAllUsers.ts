@@ -18,7 +18,7 @@ const getAllUsers = async (
   // handle admin auth and error
   handleAdminAuth(authorization!);
   // return all users array
-  const users = await UserModel.find({}, {})
+  const users = await UserModel.find({})
     .populate(CREDITS_LOANS_WITHDRAWALS_POPULATION)
     .populate(DEBITS_POPULATION)
     .exec();

@@ -35,7 +35,7 @@ const registerUser = async (
 
   // create access and refresh tokens and set cookie
   const tokenPair = authUser(
-    { id: userDoc._id, isAdmin: userDoc.isAdmin },
+    { id: userDoc._id, isAdmin: userDoc?.isAdmin!, firstname: rest.firstname },
     res
   );
   // create refresh token document

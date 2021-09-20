@@ -21,15 +21,15 @@ const sendMoney = async (
   }: GraphContextType
 ) => {
   // admin cannot send
-  const { id } = handleAdminAuth(authorization!, false);
+  const { sub } = handleAdminAuth(authorization!, false);
   // get user properties
-  const userFewData = (await UserModel.findById(id)
+  const userFewData = (await UserModel.findById(sub)
     .select("balance firstname lastname")
-    .exec()) as (Pick<UserType, "balance" | "firstname" | "lastname">) | null;
+    .exec()) as Pick<UserType, "balance" | "firstname" | "lastname"> | null;
   // throw error if user not found
-  handleError(!userFewData, Error, "User not found")
+  handleError(!userFewData, Error, "User not found");
   // destructure
-  const { balance, firstname, lastname } = userFewData!
+  const { balance, firstname, lastname } = userFewData!;
   // throw error if user balance is low or undefined
   handleError(balance! < amount, Error, "Insufficient fund.");
   // create debit document for sender
@@ -50,7 +50,7 @@ const sendMoney = async (
     await debit.save();
     // update sender debit record
     await UserModel.findByIdAndUpdate(
-      id,
+      sub,
       {
         $inc: { balance: -amount },
         $push: { debits: debit._id },

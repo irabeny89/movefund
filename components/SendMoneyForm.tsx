@@ -21,6 +21,7 @@ const SendMoneyForm = () => {
         authorization: accessToken ? `Bearer ${accessToken}` : "",
       },
     },
+    refetchQueries: ["GetMyProfile"]
   });
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {

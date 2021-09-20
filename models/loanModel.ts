@@ -1,5 +1,8 @@
 import { model, Schema, Model, models } from "mongoose";
 import type { LoanType } from "types";
+import config from "config";
+
+const { maxLoan, monthlyInterestRate } = config.environmentVariable
 
 const schema = new Schema<LoanType>(
   {
@@ -23,9 +26,9 @@ const schema = new Schema<LoanType>(
     maxLoanable: {
       type: Number,
       min: 0,
-      default: process.env.MAX_LOAN,
+      default: maxLoan,
     },
-    monthlyInterestRate: { type: Number, min: 0, default: 0.3 },
+    monthlyInterestRate: { type: Number, min: 0, default: monthlyInterestRate },
     totalInterest: {
       type: Number,
       min: 0,
