@@ -12,7 +12,7 @@ const handler = async (req: MicroRequest, res: NextApiResponse) => {
     "Access-Control-Allow-Origin",
     "https://studio.apollographql.com"
   );
-  // res.setHeader("Access-Control-Allow-Origin", tokenIssuer);
+  res.setHeader("Access-Control-Allow-Origin", tokenIssuer);
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
