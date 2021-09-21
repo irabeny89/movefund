@@ -37,10 +37,7 @@ const config = {
       process.env.NODE_ENV == "production"
         ? "https://movefund.vercel.app"
         : "http://localhost:3000",
-    graphqlUri:
-      process.env.NODE_ENV == "production"
-        ? "https://movefund.vercel.app/api/graphql"
-        : "http://localhost:3000/api/graphql",
+    graphqlUri: "/api/graphql",
   },
 };
 

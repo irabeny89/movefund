@@ -10,10 +10,12 @@ const Debits = ({ debits }: DebitProps) => {
   return (
     <>
       {debits.map(({ _id, amount, createdAt, to }) => {
-        const { firstname, lastname, _id: id } = to as UserType
+        const { firstname, lastname, _id: id } = to as UserType;
         return (
           <Card className="bg-dark mb-3" key={String(_id)}>
-            <Card.Header>Recipient: {firstname} {lastname} {id}</Card.Header>
+            <Card.Header>
+              Recipient: {firstname} {lastname} {id}
+            </Card.Header>
             <Card.Body>
               <p>Amount sent: &#8358; {amount}</p>
             </Card.Body>

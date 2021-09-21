@@ -16,7 +16,7 @@ const getLoanStyle = (
 };
 
 const Loans = ({ loans }: LoansProps) => {
-  if (loans.length < 1) return null;
+  if (loans.length < 1) return <>No loan record...</>;
   return (
     <>
       {loans.map(
@@ -36,7 +36,7 @@ const Loans = ({ loans }: LoansProps) => {
           >
             <Card.Header>
               <div>
-              &#8358; {amount} - {status}
+                &#8358; {amount} - {status}
               </div>
               <div>
                 {status == "APPROVED" && isPaid && "Paid"}
@@ -46,7 +46,9 @@ const Loans = ({ loans }: LoansProps) => {
             <Card.Body>
               {status === "APPROVED" && <p>Amount Due: &#8358; {amountDue}</p>}
               <p>Interest Rate per Month: {monthlyInterestRate} %</p>
-              {status === "APPROVED" && <p>Deadline: {new Date(+deadline!).toDateString()}</p>}
+              {status === "APPROVED" && (
+                <p>Deadline: {new Date(+deadline!).toDateString()}</p>
+              )}
             </Card.Body>
             <Card.Footer>
               Requested on: {new Date(+createdAt!).toUTCString()}
