@@ -1,3 +1,4 @@
+import { UserInputError } from "apollo-server-core";
 import mongoose from "mongoose";
 import { GraphContextType, UserType } from "types";
 import { handleAdminAuth, handleError } from ".";
@@ -28,6 +29,11 @@ const sendMoney = async (
     .exec()) as Pick<UserType, "balance" | "firstname" | "lastname"> | null;
   // throw error if user not found
   handleError(!userFewData, Error, "User not found");
+  handleError(
+    !(await UserModel.findById(to).exec()),
+    UserInputError,
+    "Recipient not found"
+  );
   // destructure
   const { balance, firstname, lastname } = userFewData!;
   // throw error if user balance is low or undefined
