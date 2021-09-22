@@ -1,5 +1,6 @@
 const config = {
   appData: {
+    author: "Ernest Irabor",
     title: "MoveFund",
     description:
       "Ernest Irabor MoveMoney web app. Send and receive money or loan using this web app.",

@@ -1,6 +1,10 @@
+import config from "config";
+
+const { title, author } = config.appData;
+
 const Footer = () => (
   <footer className="bg-secondary text-center text-white py-2">
-    Ernest Irabor | MoveMoney&trade; | &copy;2021
+    {author} | {title}&trade; | &copy;2021
   </footer>
 );
 
