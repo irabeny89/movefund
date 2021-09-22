@@ -54,6 +54,8 @@ const SendMoneyForm = () => {
         <Form.Control
           aria-label="to"
           placeholder="Recipient ID"
+          maxLength={24}
+          minLength={24}
           name="to"
           size="lg"
           required

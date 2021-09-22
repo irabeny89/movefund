@@ -46,26 +46,35 @@ const sendMoney = async (
   // run query in transacions
   const session = await mongoose.startSession();
   await session.withTransaction(async () => {
-    await credit.save();
-    await debit.save();
-    // update sender debit record
-    await UserModel.findByIdAndUpdate(
-      sub,
-      {
-        $inc: { balance: -amount },
-        $push: { debits: debit._id },
-      },
-      { session }
-    );
-    // update recipient credit record
-    await UserModel.findByIdAndUpdate(
-      to,
-      {
-        $inc: { balance: amount },
-        $push: { credits: credit._id },
-      },
-      { session }
-    ).exec();
+    try {
+      await credit.save();
+      await debit.save();
+      // update sender debit record
+      await UserModel.findByIdAndUpdate(
+        sub,
+        {
+          $inc: { balance: -amount },
+          $push: { debits: debit._id },
+        },
+        { session }
+      );
+      // update recipient credit record
+      await UserModel.findByIdAndUpdate(
+        to,
+        {
+          $inc: { balance: amount },
+          $push: { credits: credit._id },
+        },
+        { session }
+      ).exec();
+    } catch (error: any) {
+      handleError(
+        error.message.includes("validation failed"),
+        Error,
+        "Validation failed. Please check your entry."
+      );
+      handleError(error, Error, error.message);
+    }
   });
   session.endSession();
 
