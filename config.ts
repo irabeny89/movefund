@@ -3,12 +3,12 @@ const config = {
     author: "Ernest Irabor",
     title: "MoveFund",
     description:
-      "Ernest Irabor MoveMoney web app. Send and receive money or loan using this web app.",
+      "Ernest Irabor MoveFund web app. Loan, send and receive fund using this web app.",
     features: [
-      "Send money to other users",
-      "Receive money from users",
+      "Send fund to other users",
+      "Receive fund from users",
       "Request loan from us - MoveFund",
-      "Withdraw money",
+      "Withdraw fund",
     ],
     testAccount: {
       email: "movefund@gmail.com",
@@ -18,7 +18,7 @@ const config = {
       "Home",
       "Dashboard",
       "Fund Account",
-      "Send Money",
+      "Send Fund",
       "Payback Loan",
       "Users",
     ],
