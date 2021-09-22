@@ -53,7 +53,7 @@ const SendMoneyForm = () => {
       <Form noValidate validated={validated} onSubmit={handleSubmit}>
         <Form.Control
           aria-label="to"
-          placeholder="To"
+          placeholder="Recipient ID"
           name="to"
           size="lg"
           required
