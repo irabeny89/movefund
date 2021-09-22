@@ -20,7 +20,7 @@ const RequestLoanForm = () => {
   const { jwtPayload } = usePayload();
   // form validation state
   const [validated, setValidated] = useState(false);
-  // request mutation function
+  // request mutation function and trigger a refresh of profile data
   const [sendRequest, { loading, error, data }] = useMutation<{
     requestLoan: string;
   }>(REQUEST_LOAN_MUTATION, {
@@ -95,7 +95,7 @@ const RequestLoanForm = () => {
           <li>
             Interest rate:{" "}
             <Badge className="bg-primary" style={badgeStyle}>
-              {monthlyInterestRate} %
+              {monthlyInterestRate * 100} %
             </Badge>{" "}
             every month.
           </li>
