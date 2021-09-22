@@ -20,7 +20,7 @@ const Debits = ({ debits }: DebitProps) => {
               <p>Amount sent: &#8358; {amount}</p>
             </Card.Body>
             <Card.Footer>
-              Recieved: {new Date(+createdAt!).toUTCString()}
+              Sent: {new Date(+createdAt!).toUTCString()}
             </Card.Footer>
           </Card>
         );
