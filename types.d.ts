@@ -59,10 +59,10 @@ export type LoanType = {
   isPaid?: boolean;
   maxLoanable?: number;
   monthlyInterestRate?: number;
-  totalInterest?: number;
   amount: number;
   amountDue?: number;
   deadline?: Date;
+  approvedDate?: Date;
 } & TimestampAndId;
 
 export type CreditType = {

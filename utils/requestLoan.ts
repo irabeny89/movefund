@@ -1,11 +1,15 @@
 import { GraphContextType, LoanType, UserType } from "types";
 import mongoose, { ClientSession, Model } from "mongoose";
+import { UserInputError } from "apollo-server-micro"
 import {
   handleAdminAuth,
   handleError,
   CREDITS_LOANS_WITHDRAWALS_POPULATION,
   DEBITS_POPULATION,
 } from ".";
+import config from "config";
+
+const { maxLoan } = config.environmentVariable;
 
 const loanRequestTransaction = async (
   session: ClientSession,
@@ -31,7 +35,7 @@ const loanRequestTransaction = async (
         { session }
       ).exec();
     } catch (error: any) {
-      handleError(error, Error, error._message);
+      handleError(error._message, Error, "Do not exceed loan loan limit.");
     }
   });
 };
@@ -47,6 +51,8 @@ const requestLoan = async (
     },
   }: GraphContextType
 ): Promise<string> => {
+  // handle error when max loan exceeded
+  handleError(amount > maxLoan, UserInputError,  "Loan exceed limit. Max loanable is " + maxLoan)
   // only regular users can request loan
   handleAdminAuth(authorization!, false);
   // get user loans record

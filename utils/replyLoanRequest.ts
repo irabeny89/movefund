@@ -7,6 +7,13 @@ import {
   DEBITS_POPULATION,
 } from ".";
 import { UserInputError } from "apollo-server-core";
+import config from "config";
+
+const {
+  maxLoan,
+  monthlyInterestRate,
+  deadline: loanDeadline,
+} = config.environmentVariable;
 
 const replyLoanRequest = async (
   _: any,
@@ -52,14 +59,26 @@ const replyLoanRequest = async (
   // start transactions
   const session = await mongoose.startSession();
   await session.withTransaction(async () => {
-    // update user loan status with reply
-    await LoanModel.findByIdAndUpdate(
-      userLastLoan._id,
-      { status: reply },
-      { session }
-    ).exec();
-    // if loan is approved...
+    // if loan is disapproved update loan document status
+    if (reply === "DISAPPROVED")
+      await LoanModel.findByIdAndUpdate(
+        userLastLoan._id,
+        { status: reply },
+        { session }
+      ).exec();
+    // if loan is approved update user, debit and loan documents
     if (reply === "APPROVED") {
+      const deadline = new Date(Date.now() + loanDeadline);
+      // update loan document
+      await LoanModel.findByIdAndUpdate(
+        userLastLoan._id,
+        {
+          status: reply,
+          deadline,
+          approvedDate: new Date(),
+        },
+        { session }
+      ).exec();
       // increment user balance
       await UserModel.findByIdAndUpdate(
         userId,
