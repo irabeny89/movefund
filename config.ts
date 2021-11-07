@@ -30,6 +30,8 @@ const config = {
     nodeEnvironment: process.env.NODE_ENV,
     maxLoan: 10000,
     monthlyInterestRate: 0.1,
+    // 30 days deadline == 2.592e9
+    deadline: 2.592e9, 
     dbUrl:
       process.env.NODE_ENV == "production"
         ? process.env.DB_URL_ATLAS!

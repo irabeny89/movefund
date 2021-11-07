@@ -2,7 +2,7 @@ import { model, Schema, Model, models } from "mongoose";
 import type { LoanType } from "types";
 import config from "config";
 
-const { maxLoan, monthlyInterestRate } = config.environmentVariable
+const { maxLoan, monthlyInterestRate } = config.environmentVariable;
 
 const schema = new Schema<LoanType>(
   {
@@ -14,13 +14,6 @@ const schema = new Schema<LoanType>(
     amount: {
       type: Number,
       min: 0,
-      set(this: any, v: number) {
-        if (v > this.maxLoanable)
-          throw new Error(
-            "Loan exceed limit. Max loanable is " + this.maxLoanable
-          );
-        return v;
-      },
     },
     isPaid: { type: Boolean, default: false },
     maxLoanable: {
@@ -28,37 +21,31 @@ const schema = new Schema<LoanType>(
       min: 0,
       default: maxLoan,
     },
-    monthlyInterestRate: { type: Number, min: 0, default: monthlyInterestRate },
-    totalInterest: {
+    monthlyInterestRate: {
       type: Number,
       min: 0,
-      get(this: any) {
-        return this.amountDue - this.amount;
-      },
+      default: monthlyInterestRate,
     },
     amountDue: {
       type: Number,
       min: 0,
+      default: 0,
       get(this: any, v: number) {
-        if (this.isPaid) return 0;
-        // if deadline is violated
-        if (+this.deadline < Date.now()) {
-          // add another 30 days to deadline
-          this.deadline = `${+this.deadline + 2.592e9}`;
-          // then implement penalty on amountDue
-          return this.amount * this.monthlyInterestRate + v;
-        }
-        // if within deadline
-        return this.monthlyInterestRate * this.amount + this.amount;
+        const present = Date.now();
+        const multiplier = Math.ceil(
+          present / (+this.deadline - +this.approvedDate)
+        );
+        const amountDue = this.amount * this.monthlyInterestRate + this.amount;
+        // if deadline is passed return new amount due
+        if (+this.deadline < present) return amountDue * multiplier;
+        // if loan is approved return the amount due
+        if (this.status === "APPROVED") return amountDue;
+        // else return the default value
+        return v
       },
     },
-    deadline: {
-      type: Date,
-      get(this: any) {
-        // 30 days deadline
-        return `${+this.createdAt + 2.592e9}`;
-      },
-    },
+    deadline: Date,
+    approvedDate: Date,
   },
   { timestamps: true }
 );

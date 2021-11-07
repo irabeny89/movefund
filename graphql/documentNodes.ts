@@ -33,7 +33,6 @@ const USER_FRAGMENT = gql`
       isPaid
       maxLoanable
       monthlyInterestRate
-      totalInterest
       amount
       amountDue
       deadline

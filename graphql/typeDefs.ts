@@ -109,10 +109,10 @@ const typeDefs = gql`
     isPaid: Boolean!
     maxLoanable: Float!
     monthlyInterestRate: Float!
-    totalInterest: Float!
     amount: Float!
     amountDue: Float!
-    deadline: String!
+    deadline: String
+    approvedDate: String
     createdAt: String!
     updatedAt: String!
   }
